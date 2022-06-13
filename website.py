@@ -9,6 +9,8 @@ import matplotlib
 from matplotlib import pyplot as plt
 import seaborn as sns
 
+import sklearn as sk
+
 matplotlib.use('Agg')
 
 # Features names
@@ -17,9 +19,9 @@ feature_names_best = ['Q3A', 'Q5A', 'Q10A', 'Q13A', 'Q16A', 'Q17A', 'Q21A', 'Q24
 
 gender_dict = {"Male": 1, "Female": 2, "Other": 3}
 married_dict = {"Single": 1, "Married": 2, "Divorced": 3}
-feature_dict = {"Did not apply to me at all": 1, "Applied to me to some degree, or some of the time": 2,
-                "Applied to me to a considerable degree, or a good part of the time": 3,
-                "Applied to me very much, or most of the time": 4}
+feature_dict = {"Did not apply to me at all": 0, "Applied to me to some degree, or some of the time": 1,
+                "Applied to me to a considerable degree, or a good part of the time": 2,
+                "Applied to me very much, or most of the time": 3}
 
 
 # Function for Prediction Page
@@ -36,9 +38,9 @@ def get_key(val, my_dict):
 
 
 def get_fvalue(val):
-    feature_dict = {"Did not apply to me at all": 1, "Applied to me to some degree, or some of the time": 2,
-                    "Applied to me to a considerable degree, or a good part of the time": 3,
-                    "Applied to me very much, or most of the time": 4}
+    feature_dict = {"Did not apply to me at all": 0, "Applied to me to some degree, or some of the time": 1,
+                    "Applied to me to a considerable degree, or a good part of the time": 2,
+                    "Applied to me very much, or most of the time": 3}
     for key, value in feature_dict.items():
         if val == key:
             return value
@@ -49,8 +51,12 @@ def load_model():
     return loaded_model
 
 
-# def norm(x):
-#     return (x - )
+def norm(x):
+    mean = [[23.390991, 1.796313, 1.173266, 1.217683, 1.515776, 1.436246, 1.781060, 1.512424, 1.653886, 1.342133,
+             1.435240, 1.652629, 1.371423, 1.624597, 1.367484, 1.383742, 1.672240]]
+    std = [[8.534579, 0.440800, 0.455465, 1.034644, 1.067342, 1.136569, 1.072174, 1.112710, 1.154055, 1.162131,
+            1.051159, 1.065141, 1.043990, 1.147513, 1.138446, 1.185164, 1.031158]]
+    return (x - mean) / std
 
 
 def main():
@@ -59,6 +65,15 @@ def main():
         page_title="Depression Indicator",
         page_icon=page_icon,
     )
+
+    hide_st_style = """
+                    <style>
+                    # header {visibility: hidden;}
+                    footer {visibility: hidden;}
+                    </style>
+                    """
+    st.markdown(hide_st_style, unsafe_allow_html=True)
+    st.write('<style>div.block-container{padding-top:0rem;padding-bottom:0rem;}</style>', unsafe_allow_html=True)
 
     with st.sidebar:
         st.title("Depression Indicator")
@@ -334,9 +349,11 @@ def treatmentPage():
 
 
 def predictionPage():
-    submenu = ["Prediction", "Model Information"]
-    activity = st.selectbox("Please select one of the activities in this section", submenu)
-    st.text("")
+    submenu = ["Prediction", "Model Information", "Playground"]
+
+    with st.sidebar:
+        st.subheader("Activity")
+        activity = st.selectbox("Please select one activity", submenu)
 
     if activity == "Model Information":
         # Condition count
@@ -408,18 +425,58 @@ def predictionPage():
         user_input = np.array(feature_list).reshape(1, -1)
 
         st.text("")
-        st.write("Click the Predict button to predict your depression level")
+        st.write("Click the Predict button to predict your depression level.")
 
         if st.button("Predict"):
             st.text("")
             st.subheader("Result")
-            print(user_input)
             loaded_model = load_model()
-            prediction = loaded_model.predict(user_input)
-            pred_prob = loaded_model.predict_proba(user_input)
-            # result = loaded_model.score(X_test, Y_test)
-            st.text("Prediction")
-            st.write(prediction)
+            norm_user_input = norm(user_input)
+
+            prediction = loaded_model.predict(norm_user_input)
+            prediction_result = ""
+            st.write("Prediction")
+            if prediction == [[1]]:
+                prediction_result = "Normal"
+            elif prediction == [[2]]:
+                prediction_result = "Mild Depression"
+            elif prediction == [[3]]:
+                prediction_result = "Moderate Depression"
+            elif prediction == [[4]]:
+                prediction_result = "Severe Depression"
+            elif prediction == [[5]]:
+                prediction_result = "Extremely Severe"
+            st.code(prediction_result)
+
+            st.text("")
+
+            if prediction_result == "Normal":
+                st.write("You did a great job! Keep motivate and don't let depression to beat your life!")
+
+            elif prediction_result == "Mild Depression":
+                st.write("Sometimes it's ok to have some minor depression in your life.")
+                st.write("Check out the link below to help yourself for treating your depression.")
+                st.markdown("- [Treatment](/treatment#mild-depression)", unsafe_allow_html=True)
+
+            elif prediction_result == "Moderate Depression":
+                st.write("Even though your depression level isn't quite serious, but taking an initiative to treat it "
+                         "is better than nothing right?")
+                st.write("Check out the link below to help yourself for treating your depression.")
+                st.markdown("- [Treatment](#mild-depression)", unsafe_allow_html=True)
+
+            elif prediction_result == "Severe Depression":
+                st.write("It's seemed that you have a serious problem with depression, please refer the link below "
+                         "to help yourself and consult with doctors.")
+                st.write("Check out the link below to help yourself for treating your depression.")
+                st.markdown("- [Treatment](/treatment#mild-depression)", unsafe_allow_html=True)
+
+            elif prediction_result == "Extremely Severe":
+                st.write("I know that our life is hard, full of everything that isn't in our control. But please "
+                         "appreciate your life, try to learn on how to love yourself and seek treatment from doctors. "
+                         "Don't forget that our life also has lots of happy little moments, you just need to wait for "
+                         "the right time for them to appear.")
+                st.write("Check out the link below to help yourself for treating your depression.")
+                st.markdown("- [Treatment](/treatment#mild-depression)", unsafe_allow_html=True)
 
 
 if __name__ == '__main__':
