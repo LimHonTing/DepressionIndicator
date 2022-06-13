@@ -1,16 +1,15 @@
-# Core Pkgs
 import streamlit as st
+from streamlit_option_menu import option_menu
+from PIL import Image
 
-# EDA Pkgs
 import pandas as pd
 import numpy as np
 import pickle
-
 import matplotlib
-
-matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import seaborn as sns
+
+matplotlib.use('Agg')
 
 # Features names
 feature_names_best = ['Q3A', 'Q5A', 'Q10A', 'Q13A', 'Q16A', 'Q17A', 'Q21A', 'Q24A', 'Q26A', 'Q31A', 'Q34A', 'Q37A',
@@ -23,6 +22,7 @@ feature_dict = {"Did not apply to me at all": 1, "Applied to me to some degree, 
                 "Applied to me very much, or most of the time": 4}
 
 
+# Function for Prediction Page
 def get_value(val, my_dict):
     for key, value in my_dict.items():
         if val == key:
@@ -44,37 +44,61 @@ def get_fvalue(val):
             return value
 
 
-def load_model(model_file):
-    loaded_model = pickle.load(open(model_file, 'rb'))
+def load_model():
+    loaded_model = pickle.load(open("depression_model.sav", 'rb'))
     return loaded_model
 
 
+# def norm(x):
+#     return (x - )
+
+
 def main():
-    """Depression Indicator"""
-    st.title("Depression Indicator")
+    page_icon = Image.open("happy-icon-20.jpg")
+    st.set_page_config(
+        page_title="Depression Indicator",
+        page_icon=page_icon,
+    )
 
-    menu = ["Home", "Prediction", "Treatment", "Dataset", "Model Information", "Journey", "About Us"]
+    with st.sidebar:
+        st.title("Depression Indicator")
+        selected = option_menu(
+            menu_title=None,
+            options=["Home", "Prediction", "Treatment", "Dataset", "Journey", "About Us"],
+            icons=["house", "clipboard-check", "journal-medical", "table", "book", "info-circle"],
+            menu_icon="cast",
+            default_index=0,
+        )
 
-    choice = st.sidebar.selectbox("Menu", menu)
-    if choice == "Home":
+    if selected == "Home":
+        st.title("Home")
+        st.text("")
         mainPage()
-    elif choice == "Treatment":
-        treatmentPage()
-    elif choice == "Prediction":
+
+    elif selected == "Prediction":
+        st.title("Prediction")
+        st.text("")
         predictionPage()
+
+    elif selected == "Treatment":
+        st.title("Treatment")
+        st.text("")
+        treatmentPage()
 
 
 def mainPage():
-    st.subheader("Home")
     st.image("depression.jpg")
+    st.text("")
+
     st.subheader("What is Depression")
+    st.text("")
     st.markdown("""  
                 Depression is a common mental disorder. Globally, it is estimated that 5% of adults suffer from the disorder. It is characterized by persistent sadness and a lack of interest or pleasure in previously rewarding or enjoyable activities. It can also disturb sleep and appetite. Tiredness and poor concentration are common. Depression is a leading cause of disability around the world and contributes greatly to the global burden of disease. The effects of depression can be long-lasting or recurrent and can dramatically affect a person’s ability to function and live a rewarding life.
                 """)
-
     st.text(" ")
 
     st.subheader("How Depression is Classified")
+    st.text("")
     st.markdown("""
                 It’s common to feel down from time to time, but depression is a separate condition that should be treated with care. Aside from causing a general feeling of sadness, depression is known for causing feelings of hopelessness that don’t seem to go away.
 
@@ -90,7 +114,7 @@ def mainPage():
     st.markdown("""
                 The exact classification is based on many factors. These include the types of symptoms you experience, their severity, and how often they occur. Certain types of depression can also cause a temporary spike in the severity of symptoms.
 
-                Keep reading to learn more about the different classifications of depression and how they may be treated.
+                To learn more about your current state of depression, let's have a look at "Prediction" Panel.
                 """)
 
 
@@ -310,9 +334,11 @@ def treatmentPage():
 
 
 def predictionPage():
-    submenu = ["Plot", "Prediction", "Metrics"]
-    activity = st.selectbox("Activity", submenu)
-    if activity == "Plot":
+    submenu = ["Prediction", "Model Information"]
+    activity = st.selectbox("Please select one of the activities in this section", submenu)
+    st.text("")
+
+    if activity == "Model Information":
         # Condition count
         st.title("Data Vis Plot")
         df = pd.read_csv("clean_data.csv")
@@ -337,29 +363,31 @@ def predictionPage():
             st.area_chart(new_df)
 
     elif activity == "Prediction":
-        st.subheader("Predictive Analytics")
+        st.subheader("Survey")
+        st.write("Please fill all of the questions below so that our model can predict your depression level.")
+        st.text("")
 
         age = st.number_input("Age", 10, 120)
         gender = st.radio("Gender", tuple(gender_dict.keys()))
         married = st.radio("Marital Status", tuple(married_dict.keys()))
-        Q3A = st.radio("I couldn't seem to experience any positive feeling at all.",
+        Q3A = st.radio(" 1.  I couldn't seem to experience any positive feeling at all.",
                        tuple(feature_dict.keys()))
-        Q5A = st.radio("I just couldn't seem to get going.", tuple(feature_dict.keys()))
-        Q10A = st.radio("I felt that I had nothing to look forward to.", tuple(feature_dict.keys()))
-        Q13A = st.radio("I felt sad and depressed.", tuple(feature_dict.keys()))
-        Q16A = st.radio("I felt that I had lost interest in just about everything.",
+        Q5A = st.radio(" 2.  I just couldn't seem to get going.", tuple(feature_dict.keys()))
+        Q10A = st.radio(" 3.  I felt that I had nothing to look forward to.", tuple(feature_dict.keys()))
+        Q13A = st.radio(" 4.  I felt sad and depressed.", tuple(feature_dict.keys()))
+        Q16A = st.radio(" 5.  I felt that I had lost interest in just about everything.",
                         tuple(feature_dict.keys()))
-        Q17A = st.radio("I felt I wasn't worth much as a person.", tuple(feature_dict.keys()))
-        Q21A = st.radio("I felt that life wasn't worthwhile.", tuple(feature_dict.keys()))
-        Q24A = st.radio("I couldn't seem to get any enjoyment out of the things I did.",
+        Q17A = st.radio(" 6.  I felt I wasn't worth much as a person.", tuple(feature_dict.keys()))
+        Q21A = st.radio(" 7.  I felt that life wasn't worthwhile.", tuple(feature_dict.keys()))
+        Q24A = st.radio(" 8.  I couldn't seem to get any enjoyment out of the things I did.",
                         tuple(feature_dict.keys()))
-        Q26A = st.radio("I felt down-hearted and blue.", tuple(feature_dict.keys()))
-        Q31A = st.radio("I was unable to become enthusiastic about anything.", tuple(feature_dict.keys()))
-        Q34A = st.radio("I felt I was pretty worthless.", tuple(feature_dict.keys()))
-        Q37A = st.radio("I could see nothing in the future to be hopeful about.",
+        Q26A = st.radio(" 9.  I felt down-hearted and blue.", tuple(feature_dict.keys()))
+        Q31A = st.radio("10.  I was unable to become enthusiastic about anything.", tuple(feature_dict.keys()))
+        Q34A = st.radio("11.  I felt I was pretty worthless.", tuple(feature_dict.keys()))
+        Q37A = st.radio("12.  I could see nothing in the future to be hopeful about.",
                         tuple(feature_dict.keys()))
-        Q38A = st.radio("I felt that life was meaningless.", tuple(feature_dict.keys()))
-        Q42A = st.radio("I found it difficult to work up the initiative to do things.",
+        Q38A = st.radio("13.  I felt that life was meaningless.", tuple(feature_dict.keys()))
+        Q42A = st.radio("14.  I found it difficult to work up the initiative to do things.",
                         tuple(feature_dict.keys()))
         feature_list = [age, get_value(gender, gender_dict), get_value(married, married_dict),
                         get_fvalue(Q3A), get_fvalue(Q5A), get_fvalue(Q10A), get_fvalue(Q13A),
@@ -367,23 +395,31 @@ def predictionPage():
                         get_fvalue(Q26A), get_fvalue(Q31A), get_fvalue(Q34A), get_fvalue(Q37A),
                         get_fvalue(Q38A), get_fvalue(Q42A)]
 
+        st.text("")
+        st.subheader("Your Selection")
+        st.write("Verify that all of your options chosen are as below.")
+        st.text("")
         st.write(len(feature_list))
-        pretty_result = {"age": age, "gender": gender, "married": married, "Q3A": Q3A, "Q5A": Q5A,
-                         "Q10A": Q10A, "Q13A": Q13A, "Q16A": Q16A, "Q17A": Q17A, "Q21A": Q21A, "Q24A": Q24A,
-                         "Q24A": Q24A, "Q26A": Q26A, "Q31A": Q31A, "Q34A": Q34A, "Q37A": Q37A, "Q38A": Q38A,
-                         "Q42A": Q42A}
+        pretty_result = {"Age": age, "Gender": gender, "Married": married, "Q1": Q3A, "Q2": Q5A,
+                         "Q3": Q10A, "Q4": Q13A, "Q5": Q16A, "Q6": Q17A, "Q7": Q21A, "Q8": Q24A,
+                         "Q9": Q26A, "Q10": Q31A, "Q11": Q34A, "Q12": Q37A, "Q13": Q38A,
+                         "Q14": Q42A}
         st.json(pretty_result)
-        single_sample = np.array(feature_list).reshape(1, -1)
+        user_input = np.array(feature_list).reshape(1, -1)
 
-        # ML
-        # model_choice = st.selectbox("Select Model", ["Random Forest", "KNN", "DecisionTree"])
-        # if st.button("Predict"):
-        #     if model_choice == "KNN":
-        #         loaded_model = load_model("KNN.pkl")
-        #         prediction = loaded_model.predict(single_sample)
-        #         pred_prob = loaded_model.predict_proba(single_sample)
-        #         result = loaded_model.score(X_test, Y_test)
-        #         st.write(prediction)
+        st.text("")
+        st.write("Click the Predict button to predict your depression level")
+
+        if st.button("Predict"):
+            st.text("")
+            st.subheader("Result")
+            print(user_input)
+            loaded_model = load_model()
+            prediction = loaded_model.predict(user_input)
+            pred_prob = loaded_model.predict_proba(user_input)
+            # result = loaded_model.score(X_test, Y_test)
+            st.text("Prediction")
+            st.write(prediction)
 
 
 if __name__ == '__main__':
