@@ -82,7 +82,7 @@ def condition(x):
         return 'Moderate'
     if 21 <= x <= 27:
         return 'Severe'
-    if x > 28:
+    if x > 27:
         return 'Extremely Severe'
 
 
@@ -114,7 +114,7 @@ def condition(x):
         return 2
     if 21 <= x <= 27:
         return 3
-    if x > 28:
+    if x > 27:
         return 4
 
 
@@ -129,7 +129,7 @@ def cond(x):
         return 3
     if 36 <= x <= 48:
         return 4
-    if x >= 49:
+    if x > 48:
         return 5
 
 
