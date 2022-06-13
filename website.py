@@ -40,9 +40,9 @@ def get_key(val, my_dict):
 
 
 def get_fvalue(val):
-    feature_dict = {"Did not apply to me at all": 1, "Applied to me to some degree, or some of the time": 2,
-                    "Applied to me to a considerable degree, or a good part of the time": 3,
-                    "Applied to me very much, or most of the time": 4}
+    feature_dict = {"Did not apply to me at all": 0, "Applied to me to some degree, or some of the time": 1,
+                    "Applied to me to a considerable degree, or a good part of the time": 2,
+                    "Applied to me very much, or most of the time": 3}
     for key, value in feature_dict.items():
         if val == key:
             return value
@@ -135,7 +135,7 @@ def mainPage():
     st.markdown("""
                 The exact classification is based on many factors. These include the types of symptoms you experience, their severity, and how often they occur. Certain types of depression can also cause a temporary spike in the severity of symptoms.
 
-                To learn more about your current state of depression, let's have a look at "Prediction" Panel.
+                To learn more about your current state of depression, let's have a look at Prediction page.
                 """)
 
 
@@ -461,28 +461,24 @@ def predictionPage():
 
             elif prediction_result == "Mild Depression":
                 st.write("Sometimes it's ok to have some minor depression in your life.")
-                st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("[Treatment for Mild Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#mild-depression)", unsafe_allow_html=True)
+                st.write("Check out the Treatment page to help yourself for treating your depression.")
 
             elif prediction_result == "Moderate Depression":
                 st.write("Even though your depression level isn't quite serious, but taking an initiative to treat it "
                          "is better than nothing right?")
-                st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("[Treatment for Extremely Moderate Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#moderate-depression)", unsafe_allow_html=True)
+                st.write("Check out the Treatment page to help yourself for treating your depression.")
 
             elif prediction_result == "Severe Depression":
-                st.write("It's seemed that you have a serious problem with depression, please refer the link below "
-                         "to help yourself and consult with doctors.")
-                st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("[Treatment for Extremely Severe Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#severe-depression)", unsafe_allow_html=True)
+                st.write("It's seemed that you have a serious problem with depression. In order to help yourself, "
+                         "please consult with doctors.")
+                st.write("Check out the Treatment page to help yourself for treating your depression.")
 
             elif prediction_result == "Extremely Severe":
                 st.write("I know that our life is hard, full of everything that isn't in our control. But please "
                          "appreciate your life, try to learn on how to love yourself and seek treatment from doctors. "
                          "Don't forget that our life also has lots of happy little moments, you just need to wait for "
                          "the right time for them to appear.")
-                st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("[Treatment for Extremely Severe Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#severe-depression)", unsafe_allow_html=True)
+                st.write("Check out the Treatment page to help yourself for treating your depression.")
 
 
 def datasetPage():
