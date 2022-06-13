@@ -5,6 +5,8 @@ from PIL import Image
 import pandas as pd
 import numpy as np
 import pickle
+import csv
+
 import matplotlib
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -38,9 +40,9 @@ def get_key(val, my_dict):
 
 
 def get_fvalue(val):
-    feature_dict = {"Did not apply to me at all": 0, "Applied to me to some degree, or some of the time": 1,
-                    "Applied to me to a considerable degree, or a good part of the time": 2,
-                    "Applied to me very much, or most of the time": 3}
+    feature_dict = {"Did not apply to me at all": 1, "Applied to me to some degree, or some of the time": 2,
+                    "Applied to me to a considerable degree, or a good part of the time": 3,
+                    "Applied to me very much, or most of the time": 4}
     for key, value in feature_dict.items():
         if val == key:
             return value
@@ -99,6 +101,10 @@ def main():
         st.title("Treatment")
         st.text("")
         treatmentPage()
+    elif selected == "Dataset":
+        st.title("Dataset")
+        st.text("")
+        datasetPage()
 
 
 def mainPage():
@@ -477,6 +483,141 @@ def predictionPage():
                          "the right time for them to appear.")
                 st.write("Check out the link below to help yourself for treating your depression.")
                 st.markdown("- [Treatment](/treatment#mild-depression)", unsafe_allow_html=True)
+
+
+def datasetPage():
+    st.header("Data Visualization")
+    df = pd.read_csv("clean_data.csv")
+    with open('clean_data.csv', newline='') as f:
+        reader = csv.reader(f)
+        submenu = next(reader)
+    data = st.selectbox("Data", submenu)
+    if data == "Optimistic":
+        st.subheader("People who are optimistic")
+        df['Optimistic'] = df['Optimistic'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Optimistic'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Motivation":
+        st.subheader("People who are motivated")
+        df['Motivation'] = df['Motivation'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Motivation'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Looking-Forward":
+        st.subheader("People who are looking-forward")
+        df['Looking-Forward'] = df['Looking-Forward'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Looking-Forward'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Sadness":
+        st.subheader("People who are always feel sad and depressed")
+        df['Sadness'] = df['Sadness'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Sadness'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Interest":
+        st.subheader("People who are lost interest of everything")
+        df['Interest'] = df['Interest'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Interest'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Existential-Crisis":
+        st.subheader("People who are doubt on their existence")
+        df['Existential-Crisis'] = df['Existential-Crisis'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Existential-Crisis'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Importance":
+        st.subheader("People who does not have the feeling of worthwhile")
+        df['Importance'] = df['Importance'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Importance'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Enjoyment":
+        st.subheader("People who does not enjoy on anything they have done")
+        df['Enjoyment'] = df['Enjoyment'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Enjoyment'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Down-hearted":
+        st.subheader("People who feels discouraged and emotionally down")
+        df['Down-hearted'] = df['Down-hearted'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Down-hearted'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Enthusiasm":
+        st.subheader("People who does not have enthusiastic on anything")
+        df['Enthusiasm'] = df['Enthusiasm'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Enthusiasm'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Worthiness":
+        st.subheader("People who are doubt on their existence")
+        df['Worthiness'] = df['Worthiness'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Worthiness'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Hopefulness":
+        st.subheader("People who does not have any hope in their future")
+        df['Hopefulness'] = df['Hopefulness'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Hopefulness'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Meaningless":
+        st.subheader("People who feel their life is meaningless")
+        df['Meaningless'] = df['Meaningless'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Meaningless'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Tiredness":
+        st.subheader("People who does not have the initiative to do things")
+        df['Tiredness'] = df['Tiredness'].replace([0, 1, 2, 3],
+                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
+                                  'Applied to me to a considerable degree, or a good part of the time',
+                                  'Applied to me very much, or most of the time'])
+        df['Tiredness'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
 
 
 if __name__ == '__main__':
