@@ -490,7 +490,9 @@ def datasetPage():
     df = pd.read_csv("clean_data.csv")
     with open('clean_data.csv', newline='') as f:
         reader = csv.reader(f)
-        submenu = next(reader)
+        submenu = ["Optimistic", "Motivation", "Looking-Forward", "Sadness", "Interest", "Existential-Crisis",
+                   "Importance", "Enjoyment", "Down-hearted", "Enthusiasm", "Worthiness", "Hopefulness", "Meaningless",
+                   "Tiredness", "Condition"]
     data = st.selectbox("Data", submenu)
     if data == "Optimistic":
         st.subheader("People who are optimistic")
@@ -616,6 +618,11 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Tiredness'].value_counts().plot(kind='barh')
+        st.pyplot()
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+    elif data == "Condition":
+        st.subheader("The depression level of the participants")
+        df['Condition'].value_counts().plot(kind='barh')
         st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
 
