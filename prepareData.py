@@ -125,7 +125,7 @@ def cond(x):
         return 1
     if 17 <= x <= 21:
         return 2
-    if 21 <= x <= 35:
+    if 22 <= x <= 35:
         return 3
     if 36 <= x <= 48:
         return 4
