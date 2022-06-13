@@ -462,19 +462,19 @@ def predictionPage():
             elif prediction_result == "Mild Depression":
                 st.write("Sometimes it's ok to have some minor depression in your life.")
                 st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("- [Treatment](/treatment#mild-depression)", unsafe_allow_html=True)
+                st.markdown("[Treatment for Mild Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#mild-depression)", unsafe_allow_html=True)
 
             elif prediction_result == "Moderate Depression":
                 st.write("Even though your depression level isn't quite serious, but taking an initiative to treat it "
                          "is better than nothing right?")
                 st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("- [Treatment](#mild-depression)", unsafe_allow_html=True)
+                st.markdown("[Treatment for Extremely Moderate Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#moderate-depression)", unsafe_allow_html=True)
 
             elif prediction_result == "Severe Depression":
                 st.write("It's seemed that you have a serious problem with depression, please refer the link below "
                          "to help yourself and consult with doctors.")
                 st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("- [Treatment](/treatment#mild-depression)", unsafe_allow_html=True)
+                st.markdown("[Treatment for Extremely Severe Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#severe-depression)", unsafe_allow_html=True)
 
             elif prediction_result == "Extremely Severe":
                 st.write("I know that our life is hard, full of everything that isn't in our control. But please "
@@ -482,7 +482,7 @@ def predictionPage():
                          "Don't forget that our life also has lots of happy little moments, you just need to wait for "
                          "the right time for them to appear.")
                 st.write("Check out the link below to help yourself for treating your depression.")
-                st.markdown("- [Treatment](/treatment#mild-depression)", unsafe_allow_html=True)
+                st.markdown("[Treatment for Extremely Severe Depression](https://share.streamlit.io/ryoshi007/depressionindicator/website.py#severe-depression)", unsafe_allow_html=True)
 
 
 def datasetPage():
@@ -501,8 +501,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Optimistic'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Motivation":
         st.subheader("People who are motivated")
         df['Motivation'] = df['Motivation'].replace([0, 1, 2, 3],
@@ -510,8 +510,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Motivation'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Looking-Forward":
         st.subheader("People who are looking-forward")
         df['Looking-Forward'] = df['Looking-Forward'].replace([0, 1, 2, 3],
@@ -519,8 +519,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Looking-Forward'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Sadness":
         st.subheader("People who are always feel sad and depressed")
         df['Sadness'] = df['Sadness'].replace([0, 1, 2, 3],
@@ -528,8 +528,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Sadness'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Interest":
         st.subheader("People who are lost interest of everything")
         df['Interest'] = df['Interest'].replace([0, 1, 2, 3],
@@ -537,8 +537,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Interest'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Existential-Crisis":
         st.subheader("People who are doubt on their existence")
         df['Existential-Crisis'] = df['Existential-Crisis'].replace([0, 1, 2, 3],
@@ -546,8 +546,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Existential-Crisis'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Importance":
         st.subheader("People who does not have the feeling of worthwhile")
         df['Importance'] = df['Importance'].replace([0, 1, 2, 3],
@@ -555,8 +555,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Importance'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Enjoyment":
         st.subheader("People who does not enjoy on anything they have done")
         df['Enjoyment'] = df['Enjoyment'].replace([0, 1, 2, 3],
@@ -564,8 +564,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Enjoyment'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Down-hearted":
         st.subheader("People who feels discouraged and emotionally down")
         df['Down-hearted'] = df['Down-hearted'].replace([0, 1, 2, 3],
@@ -573,8 +573,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Down-hearted'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Enthusiasm":
         st.subheader("People who does not have enthusiastic on anything")
         df['Enthusiasm'] = df['Enthusiasm'].replace([0, 1, 2, 3],
@@ -582,8 +582,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Enthusiasm'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Worthiness":
         st.subheader("People who are doubt on their existence")
         df['Worthiness'] = df['Worthiness'].replace([0, 1, 2, 3],
@@ -591,8 +591,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Worthiness'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Hopefulness":
         st.subheader("People who does not have any hope in their future")
         df['Hopefulness'] = df['Hopefulness'].replace([0, 1, 2, 3],
@@ -600,8 +600,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Hopefulness'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Meaningless":
         st.subheader("People who feel their life is meaningless")
         df['Meaningless'] = df['Meaningless'].replace([0, 1, 2, 3],
@@ -609,8 +609,8 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Meaningless'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Tiredness":
         st.subheader("People who does not have the initiative to do things")
         df['Tiredness'] = df['Tiredness'].replace([0, 1, 2, 3],
@@ -618,13 +618,13 @@ def datasetPage():
                                   'Applied to me to a considerable degree, or a good part of the time',
                                   'Applied to me very much, or most of the time'])
         df['Tiredness'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
     elif data == "Condition":
         st.subheader("The depression level of the participants")
         df['Condition'].value_counts().plot(kind='barh')
-        st.pyplot()
         st.set_option('deprecation.showPyplotGlobalUse', False)
+        st.pyplot()
 
 
 if __name__ == '__main__':
