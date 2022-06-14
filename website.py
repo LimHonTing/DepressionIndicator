@@ -1,4 +1,3 @@
-import pandas
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image
@@ -6,8 +5,6 @@ from PIL import Image
 import pandas as pd
 import numpy as np
 import pickle
-import csv
-
 import matplotlib
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -60,7 +57,6 @@ def norm(x):
     return (x - mean) / std
 
 
-@st.cache
 def get_data():
     playground_data = pd.read_csv("clean_data.csv")
     playground_data.drop("Age_Groups", inplace=True, axis=1)
@@ -101,7 +97,7 @@ def main():
 
     hide_st_style = """
                     <style>
-                    # header {visibility: hidden;}
+                    header {visibility: hidden;}
                     footer {visibility: hidden;}
                     </style>
                     """
@@ -112,8 +108,8 @@ def main():
         st.title("Depression Indicator")
         selected = option_menu(
             menu_title=None,
-            options=["Home", "Prediction", "Treatment", "Dataset", "About Us"],
-            icons=["house", "clipboard-check", "journal-medical", "table", "info-circle"],
+            options=["Home", "Prediction", "Treatment", "Dataset", "Model Information", "About Us"],
+            icons=["house", "clipboard-check", "journal-medical", "table", "wrench", "info-circle"],
             menu_icon="cast",
             default_index=0,
         )
@@ -126,16 +122,23 @@ def main():
     elif selected == "Prediction":
         st.title("Prediction")
         st.text("")
-        predictionPage()
+        predictionResult()
 
     elif selected == "Treatment":
         st.title("Treatment")
         st.text("")
         treatmentPage()
+
     elif selected == "Dataset":
         st.title("Dataset")
         st.text("")
         datasetPage()
+
+    elif selected == "Model Information":
+        st.title("Model Information")
+        st.text("")
+        model_information()
+
     elif selected == "About Us":
         st.title("About Us")
         st.text("")
@@ -419,21 +422,6 @@ def severe_depression():
     st.text(" ")
 
 
-def predictionPage():
-    submenu = ["Prediction", "Model Information"]
-
-    with st.sidebar:
-        st.markdown("""
-        # Section
-        """)
-        activity = st.selectbox("Please select one section", submenu)
-
-    if activity == "Model Information":
-        model_information()
-    elif activity == "Prediction":
-        predictionResult()
-
-
 def predictionResult():
     st.subheader("Survey")
     st.write("Please fill all of the questions below so that our model can predict your depression level.")
@@ -531,8 +519,9 @@ def predictionResult():
 
 
 def model_information():
-    st.subheader("Model Information")
-    st.write("Usually some users would like to know the dataset that we use, and here is the information about it.")
+    st.write("The prediction model that we use in our project is Support Vector Machine (SVM) with radial basis "
+             "function as the kernel. Starting from data preparation, to data processing and finally to model "
+             "preparation, we have utilised pandas, numpy and scikit-learn libraries.")
     st.text("")
 
     st.subheader("People Condition of Depression Level")
@@ -564,6 +553,15 @@ def model_information():
     st.image("Assets/learning_curve.png")
     st.text("")
 
+    st.subheader("Performance Against Unseen Data")
+    st.write("By utilising the training data and k-fold cross-validation, we could shuffle and fold the data to "
+             "evaluate machine learning model when facing unseen data. That is, to use a limited sample in order to "
+             "estimate how the model is expected to perform in general when used to make predictions on data not used "
+             "during the training of the model.")
+    st.text("")
+    st.image("Assets/performance_against_unseen_data.png")
+    st.text("")
+
     st.subheader("Confusion Matrix")
     st.write("Confusion Matrix is a performance measurement for machine learning classification where output can be "
              "two or more classes.")
@@ -571,6 +569,14 @@ def model_information():
              "refer to the number of values that are being correctly predicted by the model, whereas the rest are the "
              "number of values that are predicted wrongly.")
     st.image("Assets/confusion_matrix.png")
+    st.text("")
+
+    st.subheader("Decision Boundary")
+    st.write("SVM will try to make a decision boundary in such as a way that the separation betweeen the classes is as "
+             "wide as possible.")
+    st.write("Since our model has high dimension, we will have to reduce its dimensionality and use linear SVM to plot "
+             "to plot the boundary.")
+    st.image("Assets/decision_boundary.png")
     st.text("")
 
 
@@ -820,6 +826,7 @@ def datasetPage():
             st.write(custom_plot)
             st.pyplot()
 
+
 def aboutUsPage():
     st.subheader("Problem Statement")
     st.write("""Based on World Health Organization (WHO), Depression is a common illness worldwide, with an estimated 
@@ -841,9 +848,16 @@ def aboutUsPage():
 
     st.subheader("Group Information")
     d = {"Name":["Jason Wong Jack","Wong Yan Jian","Chong Jia Ying","Lim Hon Ting","Lim JiaJun"],
-         'Matric':["U2102864","U2102753","U2102853","S2114212","S2124035"]}
+         'Matric Number':["U2102864","U2102753","U2102853","S2114212","S2124035"]}
     df = pd.DataFrame(data=d, index=[1,2,3,4,5])
     st.table(df)
+    st.text("")
+
+    st.subheader("Project")
+    st.write("The whole source code that has been used to make the prediction model and the website can be found on "
+             "[GitHub](https://github.com/ryoshi007/DepressionIndicator). We hope that you can enjoy our hardwork. "
+             "Thanks!")
+
 
 if __name__ == '__main__':
     main()
