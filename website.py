@@ -1,4 +1,3 @@
-import pandas
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image
@@ -12,7 +11,9 @@ import matplotlib
 from matplotlib import pyplot as plt
 import seaborn as sns
 
-import sklearn as sk
+from sklearn.model_selection import learning_curve
+from sklearn.model_selection import ShuffleSplit
+from sklearn.model_selection import train_test_split
 
 matplotlib.use('Agg')
 
@@ -62,7 +63,6 @@ def norm(x):
     return (x - mean) / std
 
 
-@st.cache
 def get_data():
     playground_data = pd.read_csv("clean_data.csv")
     playground_data.drop("Age_Groups", inplace=True, axis=1)
@@ -78,8 +78,24 @@ def get_data():
     return playground_data
 
 
+# Function for Dataset Page
+def explore(data):
+    data.drop("Condition", inplace=True, axis=1)
+    df_types = pd.DataFrame(data.dtypes, columns=['Data Type'])
+    numerical_cols = df_types[~df_types['Data Type'].isin(['object',
+                                                           'bool'])].index.values
+    df_types['Count'] = data.count()
+    df_types['Unique Values'] = data.nunique()
+    df_types['Min'] = data[numerical_cols].min()
+    df_types['Max'] = data[numerical_cols].max()
+    df_types['Average'] = data[numerical_cols].mean()
+    df_types['Median'] = data[numerical_cols].median()
+    df_types['St. Dev.'] = data[numerical_cols].std()
+    return df_types.astype(str)
+
+
 def main():
-    page_icon = Image.open("happy-icon-20.jpg")
+    page_icon = Image.open("Assets/happy-icon-20.jpg")
     st.set_page_config(
         page_title="Depression Indicator",
         page_icon=page_icon,
@@ -98,8 +114,8 @@ def main():
         st.title("Depression Indicator")
         selected = option_menu(
             menu_title=None,
-            options=["Home", "Prediction", "Treatment", "Dataset", "Journey", "About Us"],
-            icons=["house", "clipboard-check", "journal-medical", "table", "book", "info-circle"],
+            options=["Home", "Prediction", "Treatment", "Dataset", "About Us"],
+            icons=["house", "clipboard-check", "journal-medical", "table", "info-circle"],
             menu_icon="cast",
             default_index=0,
         )
@@ -124,23 +140,8 @@ def main():
         datasetPage()
 
 
-# Function for Dataset Page
-def explore(data):
-    df_types = pd.DataFrame(data.dtypes, columns=['Data Type'])
-    numerical_cols = df_types[~df_types['Data Type'].isin(['object',
-                                                           'bool'])].index.values
-    df_types['Count'] = data.count()
-    df_types['Unique Values'] = data.nunique()
-    df_types['Min'] = data[numerical_cols].min()
-    df_types['Max'] = data[numerical_cols].max()
-    df_types['Average'] = data[numerical_cols].mean()
-    df_types['Median'] = data[numerical_cols].median()
-    df_types['St. Dev.'] = data[numerical_cols].std()
-    return df_types.astype(str)
-
-
 def mainPage():
-    st.image("depression.jpg")
+    st.image("Assets/depression.jpg")
     st.text("")
 
     st.subheader("What is Depression")
@@ -391,18 +392,18 @@ def treatmentPage():
 
 
 def predictionPage():
-    submenu = ["Prediction", "Model Information", "Playground"]
+    submenu = ["Prediction", "Model Information"]
 
     with st.sidebar:
-        st.subheader("Activity")
-        activity = st.selectbox("Please select one activity", submenu)
+        st.markdown("""
+        # Section
+        """)
+        activity = st.selectbox("Please select one section", submenu)
 
     if activity == "Model Information":
         model_information()
     elif activity == "Prediction":
         predictionResult()
-    elif activity == "Playground":
-        playground()
 
 
 def predictionResult():
@@ -502,37 +503,47 @@ def predictionResult():
 
 
 def model_information():
-    # Condition count
-    st.title("Data Vis Plot")
-    df = pd.read_csv("clean_data.csv")
-    st.dataframe(df)
+    st.subheader("Model Information")
+    st.write("Usually some users would like to know the dataset that we use, and here is the information about it.")
+    st.text("")
 
     st.subheader("People Condition of Depression Level")
-    df['Condition'].value_counts().plot(kind='bar')
+    st.write("Here is the bar chart graph that shows the total labels count for our dataset")
+    st.text("")
+    label_data = pd.read_csv("clean_data.csv")
+    label_data['Condition'] = label_data['Condition'].replace([1, 2, 3, 4, 5],
+                                              ['Normal', 'Mild', 'Moderate', 'Severe', 'Extremely Severe'])
+    label_data['Condition'].value_counts().plot(kind='bar')
     st.pyplot()
     st.set_option('deprecation.showPyplotGlobalUse', False)
+    st.text("")
 
-    # Depr.corr
     st.subheader("Correlation of Depression")
+    st.write("Correlation graph allows us to see how well the relationship between one variable with another. The "
+             "lighter the tile colour, the stronger the correlation between two variables.")
+    st.text("")
+    corr_data = get_data().copy()
     fig, ax = plt.subplots()
-    sns.heatmap(df.corr(), ax=ax)
+    sns.heatmap(corr_data.corr(), ax=ax)
     st.write(fig)
     st.set_option('deprecation.showPyplotGlobalUse', False)
-
-    if st.checkbox("Area Chart"):
-        all_columns = df.columns.to_list()
-        feat_choices = st.multiselect("Choose a Feature", all_columns)
-        new_df = df[feat_choices]
-        st.area_chart(new_df)
-
-
-def playground():
-    st.subheader("Playground")
-    st.write("It will be fun if you guys can create your own model and see how well your model can perform depending on"
-             " your choices of machine learning model and parameters. At playground, we allow user to do exactly that "
-             "without having to code! Let's dive into it!")
     st.text("")
-    data = get_data()
+
+    st.subheader("Learning Curve")
+    st.write("Learning curve able to show us how the performance of the classifier changes. At here, we are using "
+             "Support Vector Machine (SVM) with the RBF Kernel.")
+    st.text("")
+    st.image("Assets/learning_curve.png")
+    st.text("")
+
+    st.subheader("Confusion Matrix")
+    st.write("Confusion Matrix is a performance measurement for machine learning classification where output can be "
+             "two or more classes.")
+    st.write("The table compares both true labels and the predicted labels by the model. The value on the diagonal "
+             "refer to the number of values that are being correctly predicted by the model, whereas the rest are the "
+             "number of values that are predicted wrongly.")
+    st.image("Assets/confusion_matrix.png")
+    st.text("")
 
 
 def datasetPage():
@@ -541,7 +552,13 @@ def datasetPage():
     st.text("")
     inspect_data = get_data()
 
-    st.header("Full Dataset")
+    st.subheader("About Dataset")
+    st.write("The dataset that we use is obtained from this [link](https://www.kaggle.com/datasets/lucasgreenwell/depression-anxiety-stress-scales-responses?resource=download&select=data.csv).")
+    st.write("It consists of questions, answers and metadata collected from 39775 Depression Anxiety Stress Scales. "  
+             "The data was hosted on OpenPsychometrics.org. We utilize this data to train the machine learning model.")
+    st.text("")
+
+    st.subheader("Full Dataset")
     st.write("Below are the whole dataset that has been used by our model")
     st.dataframe(inspect_data)
     st.text("")
@@ -592,126 +609,140 @@ def datasetPage():
     if data == "Optimistic":
         st.subheader("People who are optimistic")
         df['Optimistic'] = df['Optimistic'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                    ['Did not applied to me at all',
+                                                     'Applied to me to some degree, or some of the time',
+                                                     'Applied to me to a considerable degree, or a good part of the time',
+                                                     'Applied to me very much, or most of the time'])
         df['Optimistic'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Motivation":
         st.subheader("People who are motivated")
         df['Motivation'] = df['Motivation'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                    ['Did not applied to me at all',
+                                                     'Applied to me to some degree, or some of the time',
+                                                     'Applied to me to a considerable degree, or a good part of the time',
+                                                     'Applied to me very much, or most of the time'])
         df['Motivation'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Looking-Forward":
         st.subheader("People who are looking-forward")
         df['Looking-Forward'] = df['Looking-Forward'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                              ['Did not applied to me at all',
+                                                               'Applied to me to some degree, or some of the time',
+                                                               'Applied to me to a considerable degree, or a good part of the time',
+                                                               'Applied to me very much, or most of the time'])
         df['Looking-Forward'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Sadness":
         st.subheader("People who are always feel sad and depressed")
         df['Sadness'] = df['Sadness'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                              ['Did not applied to me at all',
+                                               'Applied to me to some degree, or some of the time',
+                                               'Applied to me to a considerable degree, or a good part of the time',
+                                               'Applied to me very much, or most of the time'])
         df['Sadness'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Interest":
         st.subheader("People who are lost interest of everything")
         df['Interest'] = df['Interest'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                ['Did not applied to me at all',
+                                                 'Applied to me to some degree, or some of the time',
+                                                 'Applied to me to a considerable degree, or a good part of the time',
+                                                 'Applied to me very much, or most of the time'])
         df['Interest'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Existential-Crisis":
         st.subheader("People who are doubt on their existence")
         df['Existential-Crisis'] = df['Existential-Crisis'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                                    ['Did not applied to me at all',
+                                                                     'Applied to me to some degree, or some of the time',
+                                                                     'Applied to me to a considerable degree, or a good part of the time',
+                                                                     'Applied to me very much, or most of the time'])
         df['Existential-Crisis'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Importance":
         st.subheader("People who does not have the feeling of worthwhile")
         df['Importance'] = df['Importance'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                    ['Did not applied to me at all',
+                                                     'Applied to me to some degree, or some of the time',
+                                                     'Applied to me to a considerable degree, or a good part of the time',
+                                                     'Applied to me very much, or most of the time'])
         df['Importance'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Enjoyment":
         st.subheader("People who does not enjoy on anything they have done")
         df['Enjoyment'] = df['Enjoyment'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                  ['Did not applied to me at all',
+                                                   'Applied to me to some degree, or some of the time',
+                                                   'Applied to me to a considerable degree, or a good part of the time',
+                                                   'Applied to me very much, or most of the time'])
         df['Enjoyment'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Down-hearted":
         st.subheader("People who feels discouraged and emotionally down")
         df['Down-hearted'] = df['Down-hearted'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                        ['Did not applied to me at all',
+                                                         'Applied to me to some degree, or some of the time',
+                                                         'Applied to me to a considerable degree, or a good part of the time',
+                                                         'Applied to me very much, or most of the time'])
         df['Down-hearted'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Enthusiasm":
         st.subheader("People who does not have enthusiastic on anything")
         df['Enthusiasm'] = df['Enthusiasm'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                    ['Did not applied to me at all',
+                                                     'Applied to me to some degree, or some of the time',
+                                                     'Applied to me to a considerable degree, or a good part of the time',
+                                                     'Applied to me very much, or most of the time'])
         df['Enthusiasm'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Worthiness":
         st.subheader("People who are doubt on their existence")
         df['Worthiness'] = df['Worthiness'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                    ['Did not applied to me at all',
+                                                     'Applied to me to some degree, or some of the time',
+                                                     'Applied to me to a considerable degree, or a good part of the time',
+                                                     'Applied to me very much, or most of the time'])
         df['Worthiness'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Hopefulness":
         st.subheader("People who does not have any hope in their future")
         df['Hopefulness'] = df['Hopefulness'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                      ['Did not applied to me at all',
+                                                       'Applied to me to some degree, or some of the time',
+                                                       'Applied to me to a considerable degree, or a good part of the time',
+                                                       'Applied to me very much, or most of the time'])
         df['Hopefulness'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Meaningless":
         st.subheader("People who feel their life is meaningless")
         df['Meaningless'] = df['Meaningless'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                      ['Did not applied to me at all',
+                                                       'Applied to me to some degree, or some of the time',
+                                                       'Applied to me to a considerable degree, or a good part of the time',
+                                                       'Applied to me very much, or most of the time'])
         df['Meaningless'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
     elif data == "Tiredness":
         st.subheader("People who does not have the initiative to do things")
         df['Tiredness'] = df['Tiredness'].replace([0, 1, 2, 3],
-                                 ['Did not applied to me at all', 'Applied to me to some degree, or some of the time',
-                                  'Applied to me to a considerable degree, or a good part of the time',
-                                  'Applied to me very much, or most of the time'])
+                                                  ['Did not applied to me at all',
+                                                   'Applied to me to some degree, or some of the time',
+                                                   'Applied to me to a considerable degree, or a good part of the time',
+                                                   'Applied to me very much, or most of the time'])
         df['Tiredness'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
@@ -726,7 +757,7 @@ def datasetPage():
     st.write("People surely love graph more than boring text! At this section, you can customize your own plot.")
     st.text("")
     all_columns_names = inspect_data.columns.tolist()
-    type_of_plot = st.selectbox("Select Type of Plot", ["Area", "Bar", "Line", "Histogram", "Box", "Pie Plot",
+    type_of_plot = st.selectbox("Select type of plot", ["Area", "Bar", "Line", "Histogram", "Box", "Pie Plot",
                                                         "Kernel Density Estimation"])
     selected_columns_names = st.multiselect("Select columns to plot", all_columns_names)
 
