@@ -119,6 +119,10 @@ def main():
         st.title("Dataset")
         st.text("")
         datasetPage()
+    elif selected == "About Us":
+        st.title("About Us")
+        st.text("")
+        aboutUsPage()
 
 
 # Function for Dataset Page
@@ -197,33 +201,33 @@ def mild_depression():
 
     st.subheader("Symptoms of Mild Depression")
     st.markdown("""
-    * irritability or anger
+    * Irritability or anger
 
-    * hopelessness
+    * Hopelessness
 
-    * feelings of guilt and despair
+    * Feelings of guilt and despair
 
-    * self-loathing
+    * Self-loathing
 
-    * a loss of interest in activities you once enjoyed
+    * A loss of interest in activities you once enjoyed
 
-    * difficulties concentrating at work
+    * Difficulties concentrating at work
 
-    * a lack of motivation
+    * A lack of motivation
 
-    * a sudden disinterest in socializing
+    * A sudden disinterest in socializing
 
-    * aches and pains with seemingly no direct cause
+    * Aches and pains with seemingly no direct cause
 
-    * daytime sleepiness and fatigue
+    * Daytime sleepiness and fatigue
 
-    * insomnia
+    * Insomnia
 
-    * appetite changes
+    * Appetite changes
 
-    * weight changes
+    * Weight changes
 
-    * reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * Reckless behavior, such as abuse of alcohol and drugs, or gambling
 
     If your symptoms persist for most of the day, on an average of four days a week for two years, you would most likely be diagnosed with persistent depressive disorder. This condition is also referred to as dysthymia.
 
@@ -238,15 +242,15 @@ def mild_depression():
 
     Helpful lifestyle changes include:
 
-    * exercising daily
+    * Exercising daily
 
-    * adhering to a sleep schedule
+    * Adhering to a sleep schedule
 
-    * eating a balanced diet rich in fruits and vegetables
+    * Eating a balanced diet rich in fruits and vegetables
 
-    * practicing yoga or meditation
+    * Practicing yoga or meditation
 
-    * doing activities that reduce stress, such as journaling, reading, or listening to music
+    * Doing activities that reduce stress, such as journaling, reading, or listening to music
 
 
     Other treatments for mild depression include alternative remedies, such as St. John’s Wort and melatonin supplements. However, supplements can interfere with certain medications. Be sure to ask your doctor before taking any supplements for depression.
@@ -270,43 +274,43 @@ def moderate_depression():
 
     st.subheader("Symptoms of Moderate Depression")
     st.markdown("""
-    * irritability or anger
+    * Irritability or anger
 
-    * hopelessness
+    * Hopelessness
 
-    * feelings of guilt and despair
+    * Feelings of guilt and despair
 
-    * self-loathing
+    * Self-loathing
 
-    * a loss of interest in activities you once enjoyed
+    * A loss of interest in activities you once enjoyed
 
-    * difficulties concentrating at work
+    * Difficulties concentrating at work
 
-    * a lack of motivation
+    * A lack of motivation
 
-    * a sudden disinterest in socializing
+    * A sudden disinterest in socializing
 
-    * aches and pains with seemingly no direct cause
+    * Aches and pains with seemingly no direct cause
 
-    * daytime sleepiness and fatigue
+    * Daytime sleepiness and fatigue
 
-    * insomnia
+    * Insomnia
 
-    * appetite changes
+    * Appetite changes
 
-    * weight changes
+    * Weight changes
 
-    * reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * Reckless behavior, such as abuse of alcohol and drugs, or gambling
 
-    * problems with self-esteem
+    * Problems with self-esteem
 
-    * reduced productivity
+    * Reduced productivity
 
-    * feelings of worthlessness
+    * Feelings of worthlessness
 
-    * increased sensitivities
+    * Increased sensitivities
 
-    * excessive worrying
+    * Excessive worrying
 
     The greatest difference is that the symptoms of moderate depression are severe enough to cause problems at home and work. You may also find significant difficulties in your social life.
     """)
@@ -338,51 +342,51 @@ def severe_depression():
 
     st.subheader("Symptoms of Severe Depression")
     st.markdown("""
-    * irritability or anger
+    * Irritability or anger
 
-    * hopelessness
+    * Hopelessness
 
-    * feelings of guilt and despair
+    * Feelings of guilt and despair
 
-    * self-loathing
+    * Self-loathing
 
-    * a loss of interest in activities you once enjoyed
+    * A loss of interest in activities you once enjoyed
 
-    * difficulties concentrating at work
+    * Difficulties concentrating at work
 
-    * a lack of motivation
+    * A lack of motivation
 
-    * a sudden disinterest in socializing
+    * A sudden disinterest in socializing
+    
+    * Aches and pains with seemingly no direct cause
 
-    * aches and pains with seemingly no direct cause
+    * Daytime sleepiness and fatigue
 
-    * daytime sleepiness and fatigue
+    * Insomnia
 
-    * insomnia
+    * Appetite changes
 
-    * appetite changes
+    * Weight changes
 
-    * weight changes
+    * Reckless behavior, such as abuse of alcohol and drugs, or gambling
 
-    * reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * Problems with self-esteem
 
-    * problems with self-esteem
+    * Reduced productivity
 
-    * reduced productivity
+    * Feelings of worthlessness
 
-    * feelings of worthlessness
+    * Increased sensitivities
 
-    * increased sensitivities
+    * Excessive worrying
 
-    * excessive worrying
+    * Delusions
 
-    * delusions
+    * Feelings of stupor
 
-    * feelings of stupor
+    * Hallucinations
 
-    * hallucinations
-
-    * suicidal thoughts or behaviors
+    * Suicidal thoughts or behaviors
 
     """)
 
@@ -769,6 +773,30 @@ def datasetPage():
             st.write(custom_plot)
             st.pyplot()
 
+def aboutUsPage():
+    st.subheader("Problem Statement")
+    st.write("""Based on World Health Organization (WHO), Depression is a common illness worldwide, with an estimated 
+                3.8% of the population affected, including 5.0% among adults and 5.7% among adults older than 60 years. 
+                Depression is a leading cause of disability worldwide and is a major contributor to the overall global 
+                burden of disease. More women are affected by depression than men. Depression can lead to suicide. 
+                However, there is effective treatment for mild, moderate, and severe depression. """)
+
+    st.text("")
+
+    st.subheader("Objective")
+    st.markdown("""
+    * Raising awareness on depression in the community.
+    * Estimate your potential of having depression.
+    * Provide information about different types of depression, and suggestions to treat it.
+    """)
+
+    st.text("")
+
+    st.subheader("Group Information")
+    d = {"Name":["Jason Wong Jack","Wong Yan Jian","Chong Jia Ying","Lim Hon Ting","Lim JiaJun"],
+         'Matric':["U2102864","U2102753","U2102853","S2114212","S2124035"]}
+    df = pd.DataFrame(data=d, index=[1,2,3,4,5])
+    st.table(df)
 
 if __name__ == '__main__':
     main()
