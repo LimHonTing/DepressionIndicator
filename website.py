@@ -1,3 +1,4 @@
+import pandas
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image
@@ -10,10 +11,6 @@ import csv
 import matplotlib
 from matplotlib import pyplot as plt
 import seaborn as sns
-
-from sklearn.model_selection import learning_curve
-from sklearn.model_selection import ShuffleSplit
-from sklearn.model_selection import train_test_split
 
 matplotlib.use('Agg')
 
@@ -63,6 +60,7 @@ def norm(x):
     return (x - mean) / std
 
 
+@st.cache
 def get_data():
     playground_data = pd.read_csv("clean_data.csv")
     playground_data.drop("Age_Groups", inplace=True, axis=1)
@@ -138,6 +136,25 @@ def main():
         st.title("Dataset")
         st.text("")
         datasetPage()
+    elif selected == "About Us":
+        st.title("About Us")
+        st.text("")
+        aboutUsPage()
+
+
+# Function for Dataset Page
+def explore(data):
+    df_types = pd.DataFrame(data.dtypes, columns=['Data Type'])
+    numerical_cols = df_types[~df_types['Data Type'].isin(['object',
+                                                           'bool'])].index.values
+    df_types['Count'] = data.count()
+    df_types['Unique Values'] = data.nunique()
+    df_types['Min'] = data[numerical_cols].min()
+    df_types['Max'] = data[numerical_cols].max()
+    df_types['Average'] = data[numerical_cols].mean()
+    df_types['Median'] = data[numerical_cols].median()
+    df_types['St. Dev.'] = data[numerical_cols].std()
+    return df_types.astype(str)
 
 
 def mainPage():
@@ -173,10 +190,24 @@ def mainPage():
 
 
 def treatmentPage():
+    submenu = ["Mild Depression", "Moderate Depression", "Severe Depression"]
+
     st.write("Different types of depression have their own symptoms and treatment. Please check the symptoms and "
              "suggestions that suit with your depression level.")
     st.text("")
 
+    st.subheader("Type of Depression")
+    activity = st.selectbox("Please select one type of depression", submenu)
+
+    if activity == "Mild Depression":
+        mild_depression()
+    elif activity == "Moderate Depression":
+        moderate_depression()
+    elif activity == "Severe Depression":
+        severe_depression()
+
+
+def mild_depression():
     st.header('Mild Depression')
     st.subheader("What does mild depression feel like?")
     st.markdown("""
@@ -185,42 +216,35 @@ def treatmentPage():
 
     st.text(" ")
 
-    st.sidebar.markdown('''
-            # Sections
-            [Mild Depression](#mild-depression)  
-            [Moderate Depression](#moderate-depression)  
-            [Severe Depression](#severe-depression)  
-            ''', unsafe_allow_html=False)
-
     st.subheader("Symptoms of Mild Depression")
     st.markdown("""
-    •irritability or anger
+    * Irritability or anger
 
-    •hopelessness
+    * Hopelessness
 
-    •feelings of guilt and despair
+    * Feelings of guilt and despair
 
-    •self-loathing
+    * Self-loathing
 
-    •a loss of interest in activities you once enjoyed
+    * A loss of interest in activities you once enjoyed
 
-    •difficulties concentrating at work
+    * Difficulties concentrating at work
 
-    •a lack of motivation
+    * A lack of motivation
 
-    •a sudden disinterest in socializing
+    * A sudden disinterest in socializing
 
-    •aches and pains with seemingly no direct cause
+    * Aches and pains with seemingly no direct cause
 
-    •daytime sleepiness and fatigue
+    * Daytime sleepiness and fatigue
 
-    •insomnia
+    * Insomnia
 
-    •appetite changes
+    * Appetite changes
 
-    •weight changes
+    * Weight changes
 
-    •reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * Reckless behavior, such as abuse of alcohol and drugs, or gambling
 
     If your symptoms persist for most of the day, on an average of four days a week for two years, you would most likely be diagnosed with persistent depressive disorder. This condition is also referred to as dysthymia.
 
@@ -235,15 +259,15 @@ def treatmentPage():
 
     Helpful lifestyle changes include:
 
-    •exercising daily
+    * Exercising daily
 
-    •adhering to a sleep schedule
+    * Adhering to a sleep schedule
 
-    •eating a balanced diet rich in fruits and vegetables
+    * Eating a balanced diet rich in fruits and vegetables
 
-    •practicing yoga or meditation
+    * Practicing yoga or meditation
 
-    •doing activities that reduce stress, such as journaling, reading, or listening to music
+    * Doing activities that reduce stress, such as journaling, reading, or listening to music
 
 
     Other treatments for mild depression include alternative remedies, such as St. John’s Wort and melatonin supplements. However, supplements can interfere with certain medications. Be sure to ask your doctor before taking any supplements for depression.
@@ -255,6 +279,8 @@ def treatmentPage():
 
     st.text(" ")
 
+
+def moderate_depression():
     st.header('Moderate Depression')
     st.subheader("What does moderate depression feel like?")
     st.markdown("""
@@ -265,43 +291,43 @@ def treatmentPage():
 
     st.subheader("Symptoms of Moderate Depression")
     st.markdown("""
-    •irritability or anger
+    * Irritability or anger
 
-    •hopelessness
+    * Hopelessness
 
-    •feelings of guilt and despair
+    * Feelings of guilt and despair
 
-    •self-loathing
+    * Self-loathing
 
-    •a loss of interest in activities you once enjoyed
+    * A loss of interest in activities you once enjoyed
 
-    •difficulties concentrating at work
+    * Difficulties concentrating at work
 
-    •a lack of motivation
+    * A lack of motivation
 
-    •a sudden disinterest in socializing
+    * A sudden disinterest in socializing
 
-    •aches and pains with seemingly no direct cause
+    * Aches and pains with seemingly no direct cause
 
-    •daytime sleepiness and fatigue
+    * Daytime sleepiness and fatigue
 
-    •insomnia
+    * Insomnia
 
-    •appetite changes
+    * Appetite changes
 
-    •weight changes
+    * Weight changes
 
-    •reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * Reckless behavior, such as abuse of alcohol and drugs, or gambling
 
-    •problems with self-esteem
+    * Problems with self-esteem
 
-    •reduced productivity
+    * Reduced productivity
 
-    •feelings of worthlessness
+    * Feelings of worthlessness
 
-    •increased sensitivities
+    * Increased sensitivities
 
-    •excessive worrying
+    * Excessive worrying
 
     The greatest difference is that the symptoms of moderate depression are severe enough to cause problems at home and work. You may also find significant difficulties in your social life.
     """)
@@ -317,6 +343,8 @@ def treatmentPage():
 
     st.text(" ")
 
+
+def severe_depression():
     st.header("Severe Depression")
     st.subheader("What does severe (major) depression feel like?")
     st.markdown("""
@@ -331,51 +359,51 @@ def treatmentPage():
 
     st.subheader("Symptoms of Severe Depression")
     st.markdown("""
-    •irritability or anger
+    * Irritability or anger
 
-    •hopelessness
+    * Hopelessness
 
-    •feelings of guilt and despair
+    * Feelings of guilt and despair
 
-    •self-loathing
+    * Self-loathing
 
-    •a loss of interest in activities you once enjoyed
+    * A loss of interest in activities you once enjoyed
 
-    •difficulties concentrating at work
+    * Difficulties concentrating at work
 
-    •a lack of motivation
+    * A lack of motivation
 
-    •a sudden disinterest in socializing
+    * A sudden disinterest in socializing
+    
+    * Aches and pains with seemingly no direct cause
 
-    •aches and pains with seemingly no direct cause
+    * Daytime sleepiness and fatigue
 
-    •daytime sleepiness and fatigue
+    * Insomnia
 
-    •insomnia
+    * Appetite changes
 
-    •appetite changes
+    * Weight changes
 
-    •weight changes
+    * Reckless behavior, such as abuse of alcohol and drugs, or gambling
 
-    •reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * Problems with self-esteem
 
-    •problems with self-esteem
+    * Reduced productivity
 
-    •reduced productivity
+    * Feelings of worthlessness
 
-    •feelings of worthlessness
+    * Increased sensitivities
 
-    •increased sensitivities
+    * Excessive worrying
 
-    •excessive worrying
+    * Delusions
 
-    •delusions
+    * Feelings of stupor
 
-    •feelings of stupor
+    * Hallucinations
 
-    •hallucinations
-
-    •suicidal thoughts or behaviors
+    * Suicidal thoughts or behaviors
 
     """)
 
@@ -600,11 +628,9 @@ def datasetPage():
              "functionality.")
     st.text("")
     df = pd.read_csv("clean_data.csv")
-    with open('clean_data.csv', newline='') as f:
-        reader = csv.reader(f)
-        submenu = ["Optimistic", "Motivation", "Looking-Forward", "Sadness", "Interest", "Existential-Crisis",
-                   "Importance", "Enjoyment", "Down-hearted", "Enthusiasm", "Worthiness", "Hopefulness", "Meaningless",
-                   "Tiredness", "Condition"]
+    submenu = ["Optimistic", "Motivation", "Looking-Forward", "Sadness", "Interest", "Existential-Crisis",
+               "Importance", "Enjoyment", "Down-hearted", "Enthusiasm", "Worthiness", "Hopefulness", "Meaningless",
+               "Tiredness", "Condition"]
     data = st.selectbox("Please select a column", submenu)
     if data == "Optimistic":
         st.subheader("People who are optimistic")
@@ -794,6 +820,30 @@ def datasetPage():
             st.write(custom_plot)
             st.pyplot()
 
+def aboutUsPage():
+    st.subheader("Problem Statement")
+    st.write("""Based on World Health Organization (WHO), Depression is a common illness worldwide, with an estimated 
+                3.8% of the population affected, including 5.0% among adults and 5.7% among adults older than 60 years. 
+                Depression is a leading cause of disability worldwide and is a major contributor to the overall global 
+                burden of disease. More women are affected by depression than men. Depression can lead to suicide. 
+                However, there is effective treatment for mild, moderate, and severe depression. """)
+
+    st.text("")
+
+    st.subheader("Objective")
+    st.markdown("""
+    * Raising awareness on depression in the community.
+    * Estimate your potential of having depression.
+    * Provide information about different types of depression, and suggestions to treat it.
+    """)
+
+    st.text("")
+
+    st.subheader("Group Information")
+    d = {"Name":["Jason Wong Jack","Wong Yan Jian","Chong Jia Ying","Lim Hon Ting","Lim JiaJun"],
+         'Matric':["U2102864","U2102753","U2102853","S2114212","S2124035"]}
+    df = pd.DataFrame(data=d, index=[1,2,3,4,5])
+    st.table(df)
 
 if __name__ == '__main__':
     main()
