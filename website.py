@@ -1,3 +1,4 @@
+import pandas
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image
@@ -61,6 +62,22 @@ def norm(x):
     return (x - mean) / std
 
 
+@st.cache
+def get_data():
+    playground_data = pd.read_csv("clean_data.csv")
+    playground_data.drop("Age_Groups", inplace=True, axis=1)
+    playground_data.drop("Total_Count", inplace=True, axis=1)
+    playground_data['age'] = playground_data['age'].replace([1996, 1998, 1993, 223, 1991], [23, 21, 26, 23, 28])
+
+    playground_data = playground_data.replace("Normal", 1)
+    playground_data = playground_data.replace("Mild", 2)
+    playground_data = playground_data.replace("Moderate", 3)
+    playground_data = playground_data.replace("Severe", 4)
+    playground_data = playground_data.replace("Extremely Severe", 5)
+
+    return playground_data
+
+
 def main():
     page_icon = Image.open("happy-icon-20.jpg")
     st.set_page_config(
@@ -107,6 +124,21 @@ def main():
         datasetPage()
 
 
+# Function for Dataset Page
+def explore(data):
+    df_types = pd.DataFrame(data.dtypes, columns=['Data Type'])
+    numerical_cols = df_types[~df_types['Data Type'].isin(['object',
+                                                           'bool'])].index.values
+    df_types['Count'] = data.count()
+    df_types['Unique Values'] = data.nunique()
+    df_types['Min'] = data[numerical_cols].min()
+    df_types['Max'] = data[numerical_cols].max()
+    df_types['Average'] = data[numerical_cols].mean()
+    df_types['Median'] = data[numerical_cols].median()
+    df_types['St. Dev.'] = data[numerical_cols].std()
+    return df_types.astype(str)
+
+
 def mainPage():
     st.image("depression.jpg")
     st.text("")
@@ -140,6 +172,10 @@ def mainPage():
 
 
 def treatmentPage():
+    st.write("Different types of depression have their own symptoms and treatment. Please check the symptoms and "
+             "suggestions that suit with your depression level.")
+    st.text("")
+
     st.header('Mild Depression')
     st.subheader("What does mild depression feel like?")
     st.markdown("""
@@ -150,9 +186,9 @@ def treatmentPage():
 
     st.sidebar.markdown('''
             # Sections
-            - [Mild Depression](#mild-depression)
-            - [Moderate Depression](#moderate-depression)
-            - [Severe Depression](#severe-depression)
+            [Mild Depression](#mild-depression)  
+            [Moderate Depression](#moderate-depression)  
+            [Severe Depression](#severe-depression)  
             ''', unsafe_allow_html=False)
 
     st.subheader("Symptoms of Mild Depression")
@@ -362,134 +398,197 @@ def predictionPage():
         activity = st.selectbox("Please select one activity", submenu)
 
     if activity == "Model Information":
-        # Condition count
-        st.title("Data Vis Plot")
-        df = pd.read_csv("clean_data.csv")
-        st.dataframe(df)
-
-        st.subheader("People Condition of Depression Level")
-        df['Condition'].value_counts().plot(kind='bar')
-        st.pyplot()
-        st.set_option('deprecation.showPyplotGlobalUse', False)
-
-        # Depr.corr
-        st.subheader("Correlation of Depression")
-        fig, ax = plt.subplots()
-        sns.heatmap(df.corr(), ax=ax)
-        st.write(fig)
-        st.set_option('deprecation.showPyplotGlobalUse', False)
-
-        if st.checkbox("Area Chart"):
-            all_columns = df.columns.to_list()
-            feat_choices = st.multiselect("Choose a Feature", all_columns)
-            new_df = df[feat_choices]
-            st.area_chart(new_df)
-
+        model_information()
     elif activity == "Prediction":
-        st.subheader("Survey")
-        st.write("Please fill all of the questions below so that our model can predict your depression level.")
+        predictionResult()
+    elif activity == "Playground":
+        playground()
+
+
+def predictionResult():
+    st.subheader("Survey")
+    st.write("Please fill all of the questions below so that our model can predict your depression level.")
+    st.text("")
+
+    age = st.number_input("Age", 10, 120)
+    gender = st.radio("Gender", tuple(gender_dict.keys()))
+    married = st.radio("Marital Status", tuple(married_dict.keys()))
+    Q3A = st.radio(" 1.  I couldn't seem to experience any positive feeling at all.",
+                   tuple(feature_dict.keys()))
+    Q5A = st.radio(" 2.  I just couldn't seem to get going.", tuple(feature_dict.keys()))
+    Q10A = st.radio(" 3.  I felt that I had nothing to look forward to.", tuple(feature_dict.keys()))
+    Q13A = st.radio(" 4.  I felt sad and depressed.", tuple(feature_dict.keys()))
+    Q16A = st.radio(" 5.  I felt that I had lost interest in just about everything.",
+                    tuple(feature_dict.keys()))
+    Q17A = st.radio(" 6.  I felt I wasn't worth much as a person.", tuple(feature_dict.keys()))
+    Q21A = st.radio(" 7.  I felt that life wasn't worthwhile.", tuple(feature_dict.keys()))
+    Q24A = st.radio(" 8.  I couldn't seem to get any enjoyment out of the things I did.",
+                    tuple(feature_dict.keys()))
+    Q26A = st.radio(" 9.  I felt down-hearted and blue.", tuple(feature_dict.keys()))
+    Q31A = st.radio("10.  I was unable to become enthusiastic about anything.", tuple(feature_dict.keys()))
+    Q34A = st.radio("11.  I felt I was pretty worthless.", tuple(feature_dict.keys()))
+    Q37A = st.radio("12.  I could see nothing in the future to be hopeful about.",
+                    tuple(feature_dict.keys()))
+    Q38A = st.radio("13.  I felt that life was meaningless.", tuple(feature_dict.keys()))
+    Q42A = st.radio("14.  I found it difficult to work up the initiative to do things.",
+                    tuple(feature_dict.keys()))
+    feature_list = [age, get_value(gender, gender_dict), get_value(married, married_dict),
+                    get_fvalue(Q3A), get_fvalue(Q5A), get_fvalue(Q10A), get_fvalue(Q13A),
+                    get_fvalue(Q16A), get_fvalue(Q17A), get_fvalue(Q21A), get_fvalue(Q24A),
+                    get_fvalue(Q26A), get_fvalue(Q31A), get_fvalue(Q34A), get_fvalue(Q37A),
+                    get_fvalue(Q38A), get_fvalue(Q42A)]
+
+    st.text("")
+    st.subheader("Your Selection")
+    st.write("Verify that all of your options chosen are as below.")
+    st.text("")
+    st.write(len(feature_list))
+    pretty_result = {"Age": age, "Gender": gender, "Married": married, "Q1": Q3A, "Q2": Q5A,
+                     "Q3": Q10A, "Q4": Q13A, "Q5": Q16A, "Q6": Q17A, "Q7": Q21A, "Q8": Q24A,
+                     "Q9": Q26A, "Q10": Q31A, "Q11": Q34A, "Q12": Q37A, "Q13": Q38A,
+                     "Q14": Q42A}
+    st.json(pretty_result)
+    user_input = np.array(feature_list).reshape(1, -1)
+
+    st.text("")
+    st.write("Click the Predict button to predict your depression level.")
+
+    if st.button("Predict"):
+        st.text("")
+        st.subheader("Result")
+        loaded_model = load_model()
+        norm_user_input = norm(user_input)
+
+        prediction = loaded_model.predict(norm_user_input)
+        prediction_result = ""
+        st.write("Prediction")
+        if prediction == [[1]]:
+            prediction_result = "Normal"
+        elif prediction == [[2]]:
+            prediction_result = "Mild Depression"
+        elif prediction == [[3]]:
+            prediction_result = "Moderate Depression"
+        elif prediction == [[4]]:
+            prediction_result = "Severe Depression"
+        elif prediction == [[5]]:
+            prediction_result = "Extremely Severe"
+        st.code(prediction_result)
+
         st.text("")
 
-        age = st.number_input("Age", 10, 120)
-        gender = st.radio("Gender", tuple(gender_dict.keys()))
-        married = st.radio("Marital Status", tuple(married_dict.keys()))
-        Q3A = st.radio(" 1.  I couldn't seem to experience any positive feeling at all.",
-                       tuple(feature_dict.keys()))
-        Q5A = st.radio(" 2.  I just couldn't seem to get going.", tuple(feature_dict.keys()))
-        Q10A = st.radio(" 3.  I felt that I had nothing to look forward to.", tuple(feature_dict.keys()))
-        Q13A = st.radio(" 4.  I felt sad and depressed.", tuple(feature_dict.keys()))
-        Q16A = st.radio(" 5.  I felt that I had lost interest in just about everything.",
-                        tuple(feature_dict.keys()))
-        Q17A = st.radio(" 6.  I felt I wasn't worth much as a person.", tuple(feature_dict.keys()))
-        Q21A = st.radio(" 7.  I felt that life wasn't worthwhile.", tuple(feature_dict.keys()))
-        Q24A = st.radio(" 8.  I couldn't seem to get any enjoyment out of the things I did.",
-                        tuple(feature_dict.keys()))
-        Q26A = st.radio(" 9.  I felt down-hearted and blue.", tuple(feature_dict.keys()))
-        Q31A = st.radio("10.  I was unable to become enthusiastic about anything.", tuple(feature_dict.keys()))
-        Q34A = st.radio("11.  I felt I was pretty worthless.", tuple(feature_dict.keys()))
-        Q37A = st.radio("12.  I could see nothing in the future to be hopeful about.",
-                        tuple(feature_dict.keys()))
-        Q38A = st.radio("13.  I felt that life was meaningless.", tuple(feature_dict.keys()))
-        Q42A = st.radio("14.  I found it difficult to work up the initiative to do things.",
-                        tuple(feature_dict.keys()))
-        feature_list = [age, get_value(gender, gender_dict), get_value(married, married_dict),
-                        get_fvalue(Q3A), get_fvalue(Q5A), get_fvalue(Q10A), get_fvalue(Q13A),
-                        get_fvalue(Q16A), get_fvalue(Q17A), get_fvalue(Q21A), get_fvalue(Q24A),
-                        get_fvalue(Q26A), get_fvalue(Q31A), get_fvalue(Q34A), get_fvalue(Q37A),
-                        get_fvalue(Q38A), get_fvalue(Q42A)]
+        if prediction_result == "Normal":
+            st.write("You did a great job! Keep motivate and don't let depression to beat your life!")
 
-        st.text("")
-        st.subheader("Your Selection")
-        st.write("Verify that all of your options chosen are as below.")
-        st.text("")
-        st.write(len(feature_list))
-        pretty_result = {"Age": age, "Gender": gender, "Married": married, "Q1": Q3A, "Q2": Q5A,
-                         "Q3": Q10A, "Q4": Q13A, "Q5": Q16A, "Q6": Q17A, "Q7": Q21A, "Q8": Q24A,
-                         "Q9": Q26A, "Q10": Q31A, "Q11": Q34A, "Q12": Q37A, "Q13": Q38A,
-                         "Q14": Q42A}
-        st.json(pretty_result)
-        user_input = np.array(feature_list).reshape(1, -1)
+        elif prediction_result == "Mild Depression":
+            st.write("Sometimes it's ok to have some minor depression in your life.")
+            st.write("Check out the Treatment page to help yourself for treating your depression.")
 
-        st.text("")
-        st.write("Click the Predict button to predict your depression level.")
+        elif prediction_result == "Moderate Depression":
+            st.write("Even though your depression level isn't quite serious, but taking an initiative to treat it "
+                     "is better than nothing right?")
+            st.write("Check out the Treatment page to help yourself for treating your depression.")
 
-        if st.button("Predict"):
-            st.text("")
-            st.subheader("Result")
-            loaded_model = load_model()
-            norm_user_input = norm(user_input)
+        elif prediction_result == "Severe Depression":
+            st.write("It's seemed that you have a serious problem with depression. In order to help yourself, "
+                     "please consult with doctors.")
+            st.write("Check out the Treatment page to help yourself for treating your depression.")
 
-            prediction = loaded_model.predict(norm_user_input)
-            prediction_result = ""
-            st.write("Prediction")
-            if prediction == [[1]]:
-                prediction_result = "Normal"
-            elif prediction == [[2]]:
-                prediction_result = "Mild Depression"
-            elif prediction == [[3]]:
-                prediction_result = "Moderate Depression"
-            elif prediction == [[4]]:
-                prediction_result = "Severe Depression"
-            elif prediction == [[5]]:
-                prediction_result = "Extremely Severe"
-            st.code(prediction_result)
+        elif prediction_result == "Extremely Severe":
+            st.write("I know that our life is hard, full of everything that isn't in our control. But please "
+                     "appreciate your life, try to learn on how to love yourself and seek treatment from doctors. "
+                     "Don't forget that our life also has lots of happy little moments, you just need to wait for "
+                     "the right time for them to appear.")
+            st.write("Check out the Treatment page to help yourself for treating your depression.")
 
-            st.text("")
 
-            if prediction_result == "Normal":
-                st.write("You did a great job! Keep motivate and don't let depression to beat your life!")
+def model_information():
+    # Condition count
+    st.title("Data Vis Plot")
+    df = pd.read_csv("clean_data.csv")
+    st.dataframe(df)
 
-            elif prediction_result == "Mild Depression":
-                st.write("Sometimes it's ok to have some minor depression in your life.")
-                st.write("Check out the Treatment page to help yourself for treating your depression.")
+    st.subheader("People Condition of Depression Level")
+    df['Condition'].value_counts().plot(kind='bar')
+    st.pyplot()
+    st.set_option('deprecation.showPyplotGlobalUse', False)
 
-            elif prediction_result == "Moderate Depression":
-                st.write("Even though your depression level isn't quite serious, but taking an initiative to treat it "
-                         "is better than nothing right?")
-                st.write("Check out the Treatment page to help yourself for treating your depression.")
+    # Depr.corr
+    st.subheader("Correlation of Depression")
+    fig, ax = plt.subplots()
+    sns.heatmap(df.corr(), ax=ax)
+    st.write(fig)
+    st.set_option('deprecation.showPyplotGlobalUse', False)
 
-            elif prediction_result == "Severe Depression":
-                st.write("It's seemed that you have a serious problem with depression. In order to help yourself, "
-                         "please consult with doctors.")
-                st.write("Check out the Treatment page to help yourself for treating your depression.")
+    if st.checkbox("Area Chart"):
+        all_columns = df.columns.to_list()
+        feat_choices = st.multiselect("Choose a Feature", all_columns)
+        new_df = df[feat_choices]
+        st.area_chart(new_df)
 
-            elif prediction_result == "Extremely Severe":
-                st.write("I know that our life is hard, full of everything that isn't in our control. But please "
-                         "appreciate your life, try to learn on how to love yourself and seek treatment from doctors. "
-                         "Don't forget that our life also has lots of happy little moments, you just need to wait for "
-                         "the right time for them to appear.")
-                st.write("Check out the Treatment page to help yourself for treating your depression.")
+
+def playground():
+    st.subheader("Playground")
+    st.write("It will be fun if you guys can create your own model and see how well your model can perform depending on"
+             " your choices of machine learning model and parameters. At playground, we allow user to do exactly that "
+             "without having to code! Let's dive into it!")
+    st.text("")
+    data = get_data()
 
 
 def datasetPage():
-    st.header("Data Visualization")
+    st.write("Sometimes we are wondered how's the dataset looks like. Well, here's the great news for you! At here, we "
+             "provide some functionality for the user to peek through the data easily and display information of them.")
+    st.text("")
+    inspect_data = get_data()
+
+    st.header("Full Dataset")
+    st.write("Below are the whole dataset that has been used by our model")
+    st.dataframe(inspect_data)
+    st.text("")
+    st.write("Some additional functions for those endeavour")
+
+    if st.checkbox("Show Dataset for a range of rows"):
+        number = st.number_input("Number of rows to view", 10)
+        st.dataframe(inspect_data.head(number))
+
+    if st.checkbox("Column Names"):
+        st.write(inspect_data.columns)
+
+    if st.checkbox("Shape of Dataset"):
+        st.text("Dimension in (Row, Column)")
+        st.write(inspect_data.shape)
+
+    if st.checkbox("Check Specific Columns"):
+        all_columns = inspect_data.columns.tolist()
+        selected_columns = st.multiselect("Select columns", all_columns)
+        new_dataframe = inspect_data[selected_columns]
+        st.dataframe(new_dataframe)
+
+    if st.checkbox("Show value counts"):
+        st.text("Value counts by target/class")
+        st.text("1 - Normal, 2 - Mild, 3 - Moderate, 4 - Severe, 5 - Extremely Severe")
+        st.write(inspect_data.iloc[:, -1].value_counts())
+
+    if st.checkbox("Show data types"):
+        dataset = get_data()
+        st.write(explore(dataset))
+
+    if st.checkbox("Show summary"):
+        st.write(inspect_data.describe().T)
+
+    st.text("")
+
+    st.subheader("Value Counts in each Column")
+    st.write("In order to know how many value counts for each column, here is the bar chart tool that provides such "
+             "functionality.")
+    st.text("")
     df = pd.read_csv("clean_data.csv")
     with open('clean_data.csv', newline='') as f:
         reader = csv.reader(f)
         submenu = ["Optimistic", "Motivation", "Looking-Forward", "Sadness", "Interest", "Existential-Crisis",
                    "Importance", "Enjoyment", "Down-hearted", "Enthusiasm", "Worthiness", "Hopefulness", "Meaningless",
                    "Tiredness", "Condition"]
-    data = st.selectbox("Data", submenu)
+    data = st.selectbox("Please select a column", submenu)
     if data == "Optimistic":
         st.subheader("People who are optimistic")
         df['Optimistic'] = df['Optimistic'].replace([0, 1, 2, 3],
@@ -621,6 +720,48 @@ def datasetPage():
         df['Condition'].value_counts().plot(kind='barh')
         st.set_option('deprecation.showPyplotGlobalUse', False)
         st.pyplot()
+    st.text("")
+
+    st.subheader("Data Visualization")
+    st.write("People surely love graph more than boring text! At this section, you can customize your own plot.")
+    st.text("")
+    all_columns_names = inspect_data.columns.tolist()
+    type_of_plot = st.selectbox("Select Type of Plot", ["Area", "Bar", "Line", "Histogram", "Box", "Pie Plot",
+                                                        "Kernel Density Estimation"])
+    selected_columns_names = st.multiselect("Select columns to plot", all_columns_names)
+
+    if st.button("Generate Plot"):
+        st.success("Generating customizable plot of {} for {}".format(type_of_plot, selected_columns_names))
+        if type_of_plot == "Area":
+            custom_data = inspect_data[selected_columns_names]
+            st.area_chart(custom_data)
+
+        elif type_of_plot == "Bar":
+            custom_data = inspect_data[selected_columns_names]
+            st.bar_chart(custom_data)
+
+        elif type_of_plot == "Line":
+            custom_data = inspect_data[selected_columns_names]
+            st.line_chart(custom_data)
+
+        elif type_of_plot == "Pie Plot":
+            st.write(inspect_data.iloc[:, -1].value_counts().plot.pie(autopct="%1.1f%%"))
+            st.pyplot()
+
+        elif type_of_plot == "Box":
+            custom_plot = inspect_data[selected_columns_names].plot(kind="box")
+            st.write(custom_plot)
+            st.pyplot()
+
+        elif type_of_plot == "Histogram":
+            custom_plot = inspect_data[selected_columns_names].plot(kind="hist")
+            st.write(custom_plot)
+            st.pyplot()
+
+        elif type_of_plot == "Kernel Density Estimation":
+            custom_plot = inspect_data[selected_columns_names].plot(kind="kde")
+            st.write(custom_plot)
+            st.pyplot()
 
 
 if __name__ == '__main__':
