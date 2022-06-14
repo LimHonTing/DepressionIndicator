@@ -1,12 +1,9 @@
-import pandas
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image
-
 import pandas as pd
 import numpy as np
 import pickle
-import csv
 
 import matplotlib
 from matplotlib import pyplot as plt
@@ -172,10 +169,24 @@ def mainPage():
 
 
 def treatmentPage():
+    submenu = ["Mild Depression", "Moderate Depression", "Severe Depression"]
+
     st.write("Different types of depression have their own symptoms and treatment. Please check the symptoms and "
              "suggestions that suit with your depression level.")
     st.text("")
 
+    st.subheader("Type of Depression")
+    activity = st.selectbox("Please select one type of depression", submenu)
+
+    if activity == "Mild Depression":
+        mild_depression()
+    elif activity == "Moderate Depression":
+        moderate_depression()
+    elif activity == "Severe Depression":
+        severe_depression()
+
+
+def mild_depression():
     st.header('Mild Depression')
     st.subheader("What does mild depression feel like?")
     st.markdown("""
@@ -184,42 +195,35 @@ def treatmentPage():
 
     st.text(" ")
 
-    st.sidebar.markdown('''
-            # Sections
-            [Mild Depression](#mild-depression)  
-            [Moderate Depression](#moderate-depression)  
-            [Severe Depression](#severe-depression)  
-            ''', unsafe_allow_html=False)
-
     st.subheader("Symptoms of Mild Depression")
     st.markdown("""
-    •irritability or anger
+    * irritability or anger
 
-    •hopelessness
+    * hopelessness
 
-    •feelings of guilt and despair
+    * feelings of guilt and despair
 
-    •self-loathing
+    * self-loathing
 
-    •a loss of interest in activities you once enjoyed
+    * a loss of interest in activities you once enjoyed
 
-    •difficulties concentrating at work
+    * difficulties concentrating at work
 
-    •a lack of motivation
+    * a lack of motivation
 
-    •a sudden disinterest in socializing
+    * a sudden disinterest in socializing
 
-    •aches and pains with seemingly no direct cause
+    * aches and pains with seemingly no direct cause
 
-    •daytime sleepiness and fatigue
+    * daytime sleepiness and fatigue
 
-    •insomnia
+    * insomnia
 
-    •appetite changes
+    * appetite changes
 
-    •weight changes
+    * weight changes
 
-    •reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * reckless behavior, such as abuse of alcohol and drugs, or gambling
 
     If your symptoms persist for most of the day, on an average of four days a week for two years, you would most likely be diagnosed with persistent depressive disorder. This condition is also referred to as dysthymia.
 
@@ -234,15 +238,15 @@ def treatmentPage():
 
     Helpful lifestyle changes include:
 
-    •exercising daily
+    * exercising daily
 
-    •adhering to a sleep schedule
+    * adhering to a sleep schedule
 
-    •eating a balanced diet rich in fruits and vegetables
+    * eating a balanced diet rich in fruits and vegetables
 
-    •practicing yoga or meditation
+    * practicing yoga or meditation
 
-    •doing activities that reduce stress, such as journaling, reading, or listening to music
+    * doing activities that reduce stress, such as journaling, reading, or listening to music
 
 
     Other treatments for mild depression include alternative remedies, such as St. John’s Wort and melatonin supplements. However, supplements can interfere with certain medications. Be sure to ask your doctor before taking any supplements for depression.
@@ -254,6 +258,8 @@ def treatmentPage():
 
     st.text(" ")
 
+
+def moderate_depression():
     st.header('Moderate Depression')
     st.subheader("What does moderate depression feel like?")
     st.markdown("""
@@ -264,43 +270,43 @@ def treatmentPage():
 
     st.subheader("Symptoms of Moderate Depression")
     st.markdown("""
-    •irritability or anger
+    * irritability or anger
 
-    •hopelessness
+    * hopelessness
 
-    •feelings of guilt and despair
+    * feelings of guilt and despair
 
-    •self-loathing
+    * self-loathing
 
-    •a loss of interest in activities you once enjoyed
+    * a loss of interest in activities you once enjoyed
 
-    •difficulties concentrating at work
+    * difficulties concentrating at work
 
-    •a lack of motivation
+    * a lack of motivation
 
-    •a sudden disinterest in socializing
+    * a sudden disinterest in socializing
 
-    •aches and pains with seemingly no direct cause
+    * aches and pains with seemingly no direct cause
 
-    •daytime sleepiness and fatigue
+    * daytime sleepiness and fatigue
 
-    •insomnia
+    * insomnia
 
-    •appetite changes
+    * appetite changes
 
-    •weight changes
+    * weight changes
 
-    •reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * reckless behavior, such as abuse of alcohol and drugs, or gambling
 
-    •problems with self-esteem
+    * problems with self-esteem
 
-    •reduced productivity
+    * reduced productivity
 
-    •feelings of worthlessness
+    * feelings of worthlessness
 
-    •increased sensitivities
+    * increased sensitivities
 
-    •excessive worrying
+    * excessive worrying
 
     The greatest difference is that the symptoms of moderate depression are severe enough to cause problems at home and work. You may also find significant difficulties in your social life.
     """)
@@ -316,6 +322,8 @@ def treatmentPage():
 
     st.text(" ")
 
+
+def severe_depression():
     st.header("Severe Depression")
     st.subheader("What does severe (major) depression feel like?")
     st.markdown("""
@@ -330,51 +338,51 @@ def treatmentPage():
 
     st.subheader("Symptoms of Severe Depression")
     st.markdown("""
-    •irritability or anger
+    * irritability or anger
 
-    •hopelessness
+    * hopelessness
 
-    •feelings of guilt and despair
+    * feelings of guilt and despair
 
-    •self-loathing
+    * self-loathing
 
-    •a loss of interest in activities you once enjoyed
+    * a loss of interest in activities you once enjoyed
 
-    •difficulties concentrating at work
+    * difficulties concentrating at work
 
-    •a lack of motivation
+    * a lack of motivation
 
-    •a sudden disinterest in socializing
+    * a sudden disinterest in socializing
 
-    •aches and pains with seemingly no direct cause
+    * aches and pains with seemingly no direct cause
 
-    •daytime sleepiness and fatigue
+    * daytime sleepiness and fatigue
 
-    •insomnia
+    * insomnia
 
-    •appetite changes
+    * appetite changes
 
-    •weight changes
+    * weight changes
 
-    •reckless behavior, such as abuse of alcohol and drugs, or gambling
+    * reckless behavior, such as abuse of alcohol and drugs, or gambling
 
-    •problems with self-esteem
+    * problems with self-esteem
 
-    •reduced productivity
+    * reduced productivity
 
-    •feelings of worthlessness
+    * feelings of worthlessness
 
-    •increased sensitivities
+    * increased sensitivities
 
-    •excessive worrying
+    * excessive worrying
 
-    •delusions
+    * delusions
 
-    •feelings of stupor
+    * feelings of stupor
 
-    •hallucinations
+    * hallucinations
 
-    •suicidal thoughts or behaviors
+    * suicidal thoughts or behaviors
 
     """)
 
@@ -583,11 +591,9 @@ def datasetPage():
              "functionality.")
     st.text("")
     df = pd.read_csv("clean_data.csv")
-    with open('clean_data.csv', newline='') as f:
-        reader = csv.reader(f)
-        submenu = ["Optimistic", "Motivation", "Looking-Forward", "Sadness", "Interest", "Existential-Crisis",
-                   "Importance", "Enjoyment", "Down-hearted", "Enthusiasm", "Worthiness", "Hopefulness", "Meaningless",
-                   "Tiredness", "Condition"]
+    submenu = ["Optimistic", "Motivation", "Looking-Forward", "Sadness", "Interest", "Existential-Crisis",
+               "Importance", "Enjoyment", "Down-hearted", "Enthusiasm", "Worthiness", "Hopefulness", "Meaningless",
+               "Tiredness", "Condition"]
     data = st.selectbox("Please select a column", submenu)
     if data == "Optimistic":
         st.subheader("People who are optimistic")
