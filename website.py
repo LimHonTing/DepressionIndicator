@@ -76,7 +76,7 @@ def get_data():
 
 
 def main():
-    page_icon = Image.open("happy-icon-20.jpg")
+    page_icon = Image.open("depression_image.png")
     st.set_page_config(
         page_title="Depression Indicator",
         page_icon=page_icon,
