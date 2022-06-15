@@ -193,7 +193,7 @@ def mainPage():
 
 
 def treatmentPage():
-    submenu = ["Mild Depression", "Moderate Depression", "Severe Depression"]
+    submenu = ["Mild Depression", "Moderate Depression", "Severe Depression", "Extremely Severe Depression"]
 
     st.write("Different types of depression have their own symptoms and treatment. Please check the symptoms and "
              "suggestions that suit with your depression level.")
@@ -208,6 +208,8 @@ def treatmentPage():
         moderate_depression()
     elif activity == "Severe Depression":
         severe_depression()
+    elif activity == "Extremely Severe Depression":
+        extremely_severe_depression()
 
 
 def mild_depression():
@@ -415,6 +417,145 @@ def severe_depression():
     st.subheader("Suggestions to treat Severe Depression")
     st.markdown("""
     Severe depression requires medical treatment as soon as possible. Your doctor will likely recommend an SSRI and some form of talk therapy.
+
+    If you’re experiencing suicidal thoughts or behaviors, you should seek immediate medical attention. Call your local emergency services or the National Suicide Prevention Lifeline at 800-273-8255 right away.
+    """)
+
+    st.text(" ")
+
+
+def severe_depression():
+    st.header("Severe Depression")
+    st.subheader("What does severe (major) depression feel like?")
+    st.markdown("""
+    Severe (major) depression is classified as having the symptoms of mild to moderate depression, but the symptoms are severe and noticeable, even to your loved ones.
+
+    Episodes of major depression last an average of six months or longer. Sometimes severe depression can go away after a while, but it can also be recurrent for some people.
+
+    Diagnosis is especially crucial in severe depression, and it may even be time-sensitive.
+    """)
+
+    st.text(" ")
+
+    st.subheader("Symptoms of Severe Depression")
+    st.markdown("""
+    * Irritability or anger
+
+    * Hopelessness
+
+    * Feelings of guilt and despair
+
+    * Self-loathing
+
+    * A loss of interest in activities you once enjoyed
+
+    * Difficulties concentrating at work
+
+    * A lack of motivation
+
+    * A sudden disinterest in socializing
+
+    * Aches and pains with seemingly no direct cause
+
+    * Daytime sleepiness and fatigue
+
+    * Insomnia
+
+    * Appetite changes
+
+    * Weight changes
+
+    * Reckless behavior, such as abuse of alcohol and drugs, or gambling
+
+    * Problems with self-esteem
+
+    * Reduced productivity
+
+    * Feelings of worthlessness
+
+    * Increased sensitivities
+
+    * Excessive worrying
+
+    * Delusions
+
+    * Feelings of stupor
+
+    * Hallucinations
+
+    * Suicidal thoughts or behaviors
+
+    """)
+
+    st.text(" ")
+
+    st.subheader("Suggestions to treat Severe Depression")
+    st.markdown("""
+    Severe depression requires medical treatment as soon as possible. Your doctor will likely recommend an SSRI and some form of talk therapy.
+
+    If you’re experiencing suicidal thoughts or behaviors, you should seek immediate medical attention. Call your local emergency services or the National Suicide Prevention Lifeline at 800-273-8255 right away.
+    """)
+
+    st.text(" ")
+
+
+def extremely_severe_depression():
+    st.header("Extremely Severe Depression")
+    st.subheader("What does extremely severe depression feel like?")
+    st.markdown("""
+    Extremely severe depression is classified as having the symptoms of mild to severe depression, but the symptoms are more severe and noticeable, while it lasts more than severe depression.
+
+    Episodes of extremely severe depression last an average of 2 years or more. People with extremely severe depression experience symptoms most of the day, every day. 
+
+    Most of them experience it throughout their life and it strains relationships and make daily tasks difficult.
+
+    """)
+
+    st.text(" ")
+
+    st.subheader("Symptoms of Extremely Severe Depression")
+    st.markdown("""
+    * Sadness, gloom, or grief
+
+    * Difficulty sleeping or sleeping too much
+
+    * Lack of energy and fatigue
+
+    * Changes in appetite
+
+    * Unexplained aches and pains
+
+    * Loss of interest in formerly pleasurable activities
+
+    * Lack of concentration, memory problems, and inability to make decisions
+
+    * Deep sadness or hopelessness
+
+    * Low self-esteem or feelings of inadequacy
+
+    * Lack of interest in things you once enjoyed
+
+    * Changes to sleep patterns or low energy
+
+    * Difficulty functioning at school or work
+
+    * Inability to feel joy, even on happy occasions
+
+    * Social withdrawal
+
+    * Feelings of worthlessness
+
+    * Constant worry and anxiety
+
+    * Thoughts of death, self-harm, or suicide
+
+    """)
+
+    st.text(" ")
+
+    st.subheader("Suggestions to treat Extremely Severe Depression")
+    st.markdown("""
+    Extremely severe depression requires medical treatment as soon as possible. Your doctor will likely recommend an SSRI and some form of talk therapy.
 
     If you’re experiencing suicidal thoughts or behaviors, you should seek immediate medical attention. Call your local emergency services or the National Suicide Prevention Lifeline at 800-273-8255 right away.
     """)
