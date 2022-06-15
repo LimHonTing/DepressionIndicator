@@ -660,7 +660,7 @@ def predictionResult():
 
 
 def model_information():
-    st.write("The prediction model that we use in our project is Random Forest Classifier with 100 trees "
+    st.write("The prediction model that we use in our project is Random Forest Classifier with 100 trees. "
              "Starting from data preparation, to data processing and finally to model preparation, we have utilised "
              "pandas, numpy and scikit-learn libraries.")
     st.text("")
@@ -713,10 +713,9 @@ def model_information():
     st.text("")
 
     st.subheader("Decision Tree")
-    st.write("SVM will try to make a decision boundary in such as a way that the separation betweeen the classes is as "
-             "wide as possible.")
-    st.write("Since our model has high dimension, we will have to reduce its dimensionality and use linear SVM to plot "
-             "to plot the boundary.")
+    st.write("Random Forest Classifier will use decision trees to give the final output. Here is a picture for one out "
+             "hundred decision trees used in the prediction model. Quite complicated right?")
+
     st.image("Assets/decision_tree.png")
     st.text("")
 
