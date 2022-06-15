@@ -49,11 +49,11 @@ def load_model():
     return loaded_model
 
 
-def norm(x):
-    mean = [[23.448104, 1.793421, 1.176493, 1.231427, 1.517369, 1.448104, 1.785837, 1.517704, 1.657113, 1.352357,
-             1.442196, 1.661638, 1.372428, 1.630086, 1.372847, 1.392751, 1.676556]]
-    std = [[8.648522, 0.440547, 0.458494, 1.040715, 1.069513, 1.142576, 1.075868, 1.112149, 1.158984, 1.167680,
-            1.052560, 1.068762, 1.043430, 1.151607, 1.141410, 1.188625, 1.031444]]
+def standardise(x):
+    mean = [[23.421789, 1.798366, 1.173685, 1.225644, 1.523319, 1.452210, 1.780599, 1.524115, 1.658621, 1.352399,
+             1.438089, 1.658705, 1.376032, 1.634863, 1.371255, 1.395935, 1.688540]]
+    std = [[8.666789, 0.441410, 0.456408, 1.037915, 1.069204, 1.141911, 1.075144, 1.111500, 1.155664, 1.166106,
+            1.051609, 1.067712, 1.042780, 1.150402, 1.138474, 1.186014, 1.034923]]
     return (x - mean) / std
 
 
@@ -615,7 +615,7 @@ def predictionResult():
         st.text("")
         st.subheader("Result")
         loaded_model = load_model()
-        norm_user_input = norm(user_input)
+        norm_user_input = standardise(user_input)
 
         prediction = loaded_model.predict(norm_user_input)
         prediction_result = ""
@@ -660,9 +660,9 @@ def predictionResult():
 
 
 def model_information():
-    st.write("The prediction model that we use in our project is Support Vector Machine (SVM) with radial basis "
-             "function as the kernel. Starting from data preparation, to data processing and finally to model "
-             "preparation, we have utilised pandas, numpy and scikit-learn libraries.")
+    st.write("The prediction model that we use in our project is Random Forest Classifier with 100 trees "
+             "Starting from data preparation, to data processing and finally to model preparation, we have utilised "
+             "pandas, numpy and scikit-learn libraries.")
     st.text("")
 
     st.subheader("People Condition of Depression Level")
@@ -712,12 +712,12 @@ def model_information():
     st.image("Assets/confusion_matrix.png")
     st.text("")
 
-    st.subheader("Decision Boundary")
+    st.subheader("Decision Tree")
     st.write("SVM will try to make a decision boundary in such as a way that the separation betweeen the classes is as "
              "wide as possible.")
     st.write("Since our model has high dimension, we will have to reduce its dimensionality and use linear SVM to plot "
              "to plot the boundary.")
-    st.image("Assets/decision_boundary.png")
+    st.image("Assets/decision_tree.png")
     st.text("")
 
 
