@@ -660,7 +660,7 @@ def predictionResult():
 
 
 def model_information():
-    st.write("The prediction model that we use in our project is Random Forest Classifier with 100 trees. "
+    st.write("The prediction model that we use in our project is Random Forest Classifier with 100 decision trees. "
              "Starting from data preparation, to data processing and finally to model preparation, we have utilised "
              "pandas, numpy and scikit-learn libraries.")
     st.text("")
@@ -714,7 +714,7 @@ def model_information():
 
     st.subheader("Decision Tree")
     st.write("Random Forest Classifier will use decision trees to give the final output. Here is a picture for one out "
-             "hundred decision trees used in the prediction model. Quite complicated right?")
+             "of hundred decision trees used in the prediction model. Quite complicated right?")
 
     st.image("Assets/decision_tree.png")
     st.text("")
