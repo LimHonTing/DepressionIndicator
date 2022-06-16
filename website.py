@@ -11,30 +11,39 @@ import seaborn as sns
 
 matplotlib.use('Agg')
 
-# Features names
+# Name of the features
 feature_names_best = ['Q3A', 'Q5A', 'Q10A', 'Q13A', 'Q16A', 'Q17A', 'Q21A', 'Q24A', 'Q26A', 'Q31A', 'Q34A', 'Q37A',
                       'Q38A', 'Q42A', 'gender', 'age', 'married']
 
+# Dictionary for convert gender from string to integer
 gender_dict = {"Male": 1, "Female": 2, "Other": 3}
+
+# Dictionary for convert marital status from string to integer
 married_dict = {"Single": 1, "Married": 2, "Divorced": 3}
+
+# Dictionary for convert selected answer from string to integer
 feature_dict = {"Did not apply to me at all": 0, "Applied to me to some degree, or some of the time": 1,
                 "Applied to me to a considerable degree, or a good part of the time": 2,
                 "Applied to me very much, or most of the time": 3}
 
 
-# Function for Prediction Page
+# --- Function for Prediction Page ---
+
+# Get the value from the dictionary
 def get_value(val, my_dict):
     for key, value in my_dict.items():
         if val == key:
             return value
 
 
+# Get the key from the dictionary
 def get_key(val, my_dict):
     for key, value in my_dict.items():
         if val == key:
             return key
 
 
+# Get the value from the feature_dict based on the key
 def get_fvalue(val):
     feature_dict = {"Did not apply to me at all": 0, "Applied to me to some degree, or some of the time": 1,
                     "Applied to me to a considerable degree, or a good part of the time": 2,
@@ -44,19 +53,13 @@ def get_fvalue(val):
             return value
 
 
+# Function to load the model
 def load_model():
     loaded_model = pickle.load(open("depression_model.sav", 'rb'))
     return loaded_model
 
 
-def standardise(x):
-    mean = [[23.421789, 1.798366, 1.173685, 1.225644, 1.523319, 1.452210, 1.780599, 1.524115, 1.658621, 1.352399,
-             1.438089, 1.658705, 1.376032, 1.634863, 1.371255, 1.395935, 1.688540]]
-    std = [[8.666789, 0.441410, 0.456408, 1.037915, 1.069204, 1.141911, 1.075144, 1.111500, 1.155664, 1.166106,
-            1.051609, 1.067712, 1.042780, 1.150402, 1.138474, 1.186014, 1.034923]]
-    return (x - mean) / std
-
-
+# Function to get the clean dataset and perform some cleaning
 def get_data():
     playground_data = pd.read_csv("clean_data.csv")
     playground_data.drop("Age_Groups", inplace=True, axis=1)
@@ -72,7 +75,9 @@ def get_data():
     return playground_data
 
 
-# Function for Dataset Page
+# --- Function for Dataset Page ---
+
+# Function to get the dataframe consists of variable types for each column in the dataset
 def explore(data):
     data.drop("Condition", inplace=True, axis=1)
     df_types = pd.DataFrame(data.dtypes, columns=['Data Type'])
@@ -88,6 +93,7 @@ def explore(data):
     return df_types.astype(str)
 
 
+# Function that starts when the app is running
 def main():
     page_icon = Image.open("Assets/depression_image.png")
     st.set_page_config(
@@ -145,21 +151,7 @@ def main():
         aboutUsPage()
 
 
-# Function for Dataset Page
-def explore(data):
-    df_types = pd.DataFrame(data.dtypes, columns=['Data Type'])
-    numerical_cols = df_types[~df_types['Data Type'].isin(['object',
-                                                           'bool'])].index.values
-    df_types['Count'] = data.count()
-    df_types['Unique Values'] = data.nunique()
-    df_types['Min'] = data[numerical_cols].min()
-    df_types['Max'] = data[numerical_cols].max()
-    df_types['Average'] = data[numerical_cols].mean()
-    df_types['Median'] = data[numerical_cols].median()
-    df_types['St. Dev.'] = data[numerical_cols].std()
-    return df_types.astype(str)
-
-
+# Function to display the content in the Home Page
 def mainPage():
     st.image("Assets/depression.jpg")
     st.text("")
@@ -192,6 +184,7 @@ def mainPage():
                 """)
 
 
+# Function to display the content in the Treatment Page
 def treatmentPage():
     submenu = ["Mild Depression", "Moderate Depression", "Severe Depression", "Extremely Severe Depression"]
 
@@ -212,6 +205,7 @@ def treatmentPage():
         extremely_severe_depression()
 
 
+# Function to display the content when user selects mild depression in the Treatment Page
 def mild_depression():
     st.header('Mild Depression')
     st.subheader("What does mild depression feel like?")
@@ -285,6 +279,7 @@ def mild_depression():
     st.text(" ")
 
 
+# Function to display the content when user selects moderate depression in the Treatment Page
 def moderate_depression():
     st.header('Moderate Depression')
     st.subheader("What does moderate depression feel like?")
@@ -349,6 +344,7 @@ def moderate_depression():
     st.text(" ")
 
 
+# Function to display the content when user selects severe depression in the Treatment Page
 def severe_depression():
     st.header("Severe Depression")
     st.subheader("What does severe (major) depression feel like?")
@@ -424,6 +420,7 @@ def severe_depression():
     st.text(" ")
 
 
+# Function to display the content when user selects mild_depression in the Treatment Page
 def severe_depression():
     st.header("Severe Depression")
     st.subheader("What does severe (major) depression feel like?")
@@ -499,6 +496,7 @@ def severe_depression():
     st.text(" ")
 
 
+# Function to display the content when user selects severe depression in the Treatment Page
 def extremely_severe_depression():
     st.header("Extremely Severe Depression")
     st.subheader("What does extremely severe depression feel like?")
@@ -563,6 +561,7 @@ def extremely_severe_depression():
     st.text(" ")
 
 
+# Display the questionnaires and predict the result based on user's input
 def predictionResult():
     st.subheader("Survey")
     st.write("Please fill all of the questions below so that our model can predict your depression level.")
@@ -606,7 +605,12 @@ def predictionResult():
                      "Q9": Q26A, "Q10": Q31A, "Q11": Q34A, "Q12": Q37A, "Q13": Q38A,
                      "Q14": Q42A}
     st.json(pretty_result)
-    user_input = np.array(feature_list).reshape(1, -1)
+    adjusted_feature_list = [get_fvalue(Q3A), get_fvalue(Q5A), get_fvalue(Q10A), get_fvalue(Q13A),
+                             get_fvalue(Q16A), get_fvalue(Q17A), get_fvalue(Q21A), get_fvalue(Q24A),
+                             get_fvalue(Q26A), get_fvalue(Q31A), get_fvalue(Q34A), get_fvalue(Q37A),
+                             get_fvalue(Q38A), get_fvalue(Q42A), get_value(gender, gender_dict), age,
+                             get_value(married, married_dict)]
+    user_input = np.array(adjusted_feature_list).reshape(1, -1)
 
     st.text("")
     st.write("Click the Predict button to predict your depression level.")
@@ -615,9 +619,8 @@ def predictionResult():
         st.text("")
         st.subheader("Result")
         loaded_model = load_model()
-        norm_user_input = standardise(user_input)
 
-        prediction = loaded_model.predict(norm_user_input)
+        prediction = loaded_model.predict(user_input)
         prediction_result = ""
         st.write("Prediction")
         if prediction == [[1]]:
@@ -659,6 +662,7 @@ def predictionResult():
             st.write("Check out the Treatment page to help yourself for treating your depression.")
 
 
+# Function to display the content in the Model Information Page
 def model_information():
     st.write("The prediction model that we use in our project is Random Forest Classifier with 100 decision trees. "
              "Starting from data preparation, to data processing and finally to model preparation, we have utilised "
@@ -670,7 +674,8 @@ def model_information():
     st.text("")
     label_data = pd.read_csv("clean_data.csv")
     label_data['Condition'] = label_data['Condition'].replace([1, 2, 3, 4, 5],
-                                              ['Normal', 'Mild', 'Moderate', 'Severe', 'Extremely Severe'])
+                                                              ['Normal', 'Mild', 'Moderate', 'Severe',
+                                                               'Extremely Severe'])
     label_data['Condition'].value_counts().plot(kind='bar')
     st.pyplot()
     st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -720,6 +725,7 @@ def model_information():
     st.text("")
 
 
+# Function to display the content in the Dataset Page
 def datasetPage():
     st.write("Sometimes we are wondered how's the dataset looks like. Well, here's the great news for you! At here, we "
              "provide some functionality for the user to peek through the data easily and display information of them.")
@@ -727,8 +733,9 @@ def datasetPage():
     inspect_data = get_data()
 
     st.subheader("About Dataset")
-    st.write("The dataset that we use is obtained from this [link](https://www.kaggle.com/datasets/lucasgreenwell/depression-anxiety-stress-scales-responses?resource=download&select=data.csv).")
-    st.write("It consists of questions, answers and metadata collected from 39775 Depression Anxiety Stress Scales. "  
+    st.write(
+        "The dataset that we use is obtained from this [link](https://www.kaggle.com/datasets/lucasgreenwell/depression-anxiety-stress-scales-responses?resource=download&select=data.csv).")
+    st.write("It consists of questions, answers and metadata collected from 39775 Depression Anxiety Stress Scales. "
              "The data was hosted on OpenPsychometrics.org. We utilize this data to train the machine learning model.")
     st.text("")
 
@@ -967,6 +974,7 @@ def datasetPage():
             st.pyplot()
 
 
+# Function to display the content in the About Us Page
 def aboutUsPage():
     st.subheader("Problem Statement")
     st.write("""Based on World Health Organization (WHO), Depression is a common illness worldwide, with an estimated 
@@ -987,9 +995,9 @@ def aboutUsPage():
     st.text("")
 
     st.subheader("Group Information")
-    d = {"Name":["Jason Wong Jack","Wong Yan Jian","Chong Jia Ying","Lim Hon Ting","Lim JiaJun"],
-         'Matric Number':["U2102864","U2102753","U2102853","S2114212","S2124035"]}
-    df = pd.DataFrame(data=d, index=[1,2,3,4,5])
+    d = {"Name": ["Jason Wong Jack", "Wong Yan Jian", "Chong Jia Ying", "Lim Hon Ting", "Lim JiaJun"],
+         'Matric Number': ["U2102864", "U2102753", "U2102853", "S2114212", "S2124035"]}
+    df = pd.DataFrame(data=d, index=[1, 2, 3, 4, 5])
     st.table(df)
     st.text("")
 
