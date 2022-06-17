@@ -717,6 +717,19 @@ def model_information():
     st.image("Assets/confusion_matrix.png")
     st.text("")
 
+    st.subheader("ROC Curve")
+    st.write("ROC curve is a graph that shows the performance of a classification model at all classification "
+             "thresholds")
+    st.image("Assets/roc_curve.png")
+    st.text("")
+
+    st.subheader("Feature Importance")
+    st.write("Feature Importance refers to a techniques that assign a score to input features based on how useful they "
+             "are at predicting a target variables")
+
+    st.image("Assets/feature_importance.png")
+    st.text("")
+
     st.subheader("Decision Tree")
     st.write("Random Forest Classifier will use decision trees to give the final output. Here is a picture for one out "
              "of hundred decision trees used in the prediction model. Quite complicated right?")
