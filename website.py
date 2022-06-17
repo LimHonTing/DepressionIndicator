@@ -719,13 +719,13 @@ def model_information():
 
     st.subheader("ROC Curve")
     st.write("ROC curve is a graph that shows the performance of a classification model at all classification "
-             "thresholds")
+             "thresholds.")
     st.image("Assets/roc_curve.png")
     st.text("")
 
     st.subheader("Feature Importance")
     st.write("Feature Importance refers to a techniques that assign a score to input features based on how useful they "
-             "are at predicting a target variables")
+             "are at predicting a target variables.")
 
     st.image("Assets/feature_importance.png")
     st.text("")
